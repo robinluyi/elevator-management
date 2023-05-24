@@ -20,7 +20,12 @@ import cn.iocoder.yudao.module.system.api.dept.dto.DeptRespDTO;
 import cn.iocoder.yudao.module.system.api.user.AdminUserApi;
 import cn.iocoder.yudao.module.system.api.user.dto.AdminUserRespDTO;
 import lombok.extern.slf4j.Slf4j;
+import org.flowable.bpmn.model.BpmnModel;
+import org.flowable.bpmn.model.ExtensionAttribute;
+import org.flowable.bpmn.model.ExtensionElement;
+import org.flowable.bpmn.model.FlowElement;
 import org.flowable.engine.HistoryService;
+import org.flowable.engine.RepositoryService;
 import org.flowable.engine.TaskService;
 import org.flowable.engine.history.HistoricProcessInstance;
 import org.flowable.engine.runtime.ProcessInstance;
@@ -28,6 +33,7 @@ import org.flowable.task.api.Task;
 import org.flowable.task.api.TaskQuery;
 import org.flowable.task.api.history.HistoricTaskInstance;
 import org.flowable.task.api.history.HistoricTaskInstanceQuery;
+import org.flowable.task.service.impl.persistence.entity.TaskEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionSynchronization;
@@ -61,6 +67,8 @@ public class BpmTaskServiceImpl implements BpmTaskService {
     @Resource
     private BpmProcessInstanceService processInstanceService;
     @Resource
+    private RepositoryService repositoryService;
+    @Resource
     private AdminUserApi adminUserApi;
     @Resource
     private DeptApi deptApi;
@@ -88,7 +96,11 @@ public class BpmTaskServiceImpl implements BpmTaskService {
         if (CollUtil.isEmpty(tasks)) {
             return PageResult.empty(taskQuery.count());
         }
-
+        Map<String, Map<String, String>> tasksExtAttrMap = new HashMap<>();
+        for (Task task : tasks) {
+            Map<String, String> extAttribute = getExtAttribute(task);
+            tasksExtAttrMap.put(task.getId(),extAttribute);
+        }
         // 获得 ProcessInstance Map
         Map<String, ProcessInstance> processInstanceMap =
             processInstanceService.getProcessInstanceMap(convertSet(tasks, Task::getProcessInstanceId));
@@ -96,8 +108,43 @@ public class BpmTaskServiceImpl implements BpmTaskService {
         Map<Long, AdminUserRespDTO> userMap = adminUserApi.getUserMap(
             convertSet(processInstanceMap.values(), instance -> Long.valueOf(instance.getStartUserId())));
         // 拼接结果
-        return new PageResult<>(BpmTaskConvert.INSTANCE.convertList1(tasks, processInstanceMap, userMap),
+        return new PageResult<>(BpmTaskConvert.INSTANCE.convertList3(tasks, processInstanceMap,tasksExtAttrMap, userMap),
             taskQuery.count());
+    }
+    @Override
+    public Map<String, String> getExtAttribute(Task task) {
+
+        String processDefinitionId = task.getProcessDefinitionId();
+        String taskDefinitionKey = task.getTaskDefinitionKey();
+        return getExtAttrMap(processDefinitionId, taskDefinitionKey);
+    }
+
+    private Map<String, String> getExtAttrMap(String processDefinitionId, String taskDefinitionKey) {
+        Map<String, String> extAttr = new HashMap<>();
+        BpmnModel bpmnModel = repositoryService.getBpmnModel(processDefinitionId);
+        FlowElement flowElement = bpmnModel.getMainProcess().getFlowElement(taskDefinitionKey);
+        if (flowElement == null) {
+            return Collections.emptyMap();
+        }
+        Map<String, List<ExtensionElement>> extensionElements = flowElement.getExtensionElements();
+        if (extensionElements == null) {
+            return Collections.emptyMap();
+        }
+        extensionElements.forEach((key,list)-> {
+            list.forEach(element ->{
+                Map<String, List<ExtensionElement>> childElements = element.getChildElements();
+                if (childElements != null) {
+                    List<ExtensionElement> property = childElements.get("property");
+                    for (int i = 0; i < property.size(); i++) {
+                        Map<String, List<ExtensionAttribute>> attributes = property.get(i).getAttributes();
+                        String name = attributes.get("name").get(0).getValue();
+                        String value = attributes.get("value").get(0).getValue();
+                        extAttr.put(name,value);
+                    }
+                }
+            });
+        });
+        return extAttr;
     }
 
     @Override
@@ -156,7 +203,11 @@ public class BpmTaskServiceImpl implements BpmTaskService {
         if (CollUtil.isEmpty(tasks)) {
             return Collections.emptyList();
         }
-
+        Map<String, Map<String, String>> tasksExtAttrMap = new HashMap<>();
+        tasks.forEach(task -> {
+            Map<String, String> extAttrMap = getExtAttrMap(task.getProcessDefinitionId(), task.getTaskDefinitionKey());
+            tasksExtAttrMap.put(task.getId(), extAttrMap);
+        });
         // 获得 TaskExtDO Map
         List<BpmTaskExtDO> bpmTaskExtDOs = taskExtMapper.selectListByTaskIds(convertSet(tasks, HistoricTaskInstance::getId));
         Map<String, BpmTaskExtDO> bpmTaskExtDOMap = convertMap(bpmTaskExtDOs, BpmTaskExtDO::getTaskId);
@@ -170,7 +221,7 @@ public class BpmTaskServiceImpl implements BpmTaskService {
         Map<Long, DeptRespDTO> deptMap = deptApi.getDeptMap(convertSet(userMap.values(), AdminUserRespDTO::getDeptId));
 
         // 拼接数据
-        return BpmTaskConvert.INSTANCE.convertList3(tasks, bpmTaskExtDOMap, processInstance, userMap, deptMap);
+        return BpmTaskConvert.INSTANCE.convertList4(tasks, bpmTaskExtDOMap, processInstance, userMap, deptMap,tasksExtAttrMap);
     }
 
     @Override

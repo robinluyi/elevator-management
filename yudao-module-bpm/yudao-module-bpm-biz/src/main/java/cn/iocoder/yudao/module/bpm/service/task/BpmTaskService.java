@@ -4,6 +4,7 @@ import cn.iocoder.yudao.framework.common.pojo.CommonResult;
 import cn.iocoder.yudao.framework.common.pojo.PageResult;
 import cn.iocoder.yudao.framework.common.util.collection.CollectionUtils;
 import cn.iocoder.yudao.module.bpm.controller.admin.task.vo.task.*;
+import io.swagger.v3.oas.annotations.media.Schema;
 import org.flowable.task.api.Task;
 
 import javax.validation.Valid;
@@ -127,5 +128,12 @@ public interface BpmTaskService {
      * @param task 任务实体
      */
     void updateTaskExtAssign(Task task);
+
+    /**
+     * 获得任务扩展属性
+     *
+     * @param task 任务实体
+     */
+    Map<String, String> getExtAttribute(Task task);
 
 }

@@ -76,6 +76,23 @@ public interface BpmTaskConvert {
         });
     }
 
+    default List<BpmTaskTodoPageItemRespVO> convertList3(List<Task> tasks,
+                                                         Map<String, ProcessInstance> processInstanceMap,
+                                                         Map<String, Map<String,String>> tasksExtAttrMap,
+                                                         Map<Long, AdminUserRespDTO> userMap) {
+        return CollectionUtils.convertList(tasks, task -> {
+            BpmTaskTodoPageItemRespVO respVO = convert1(task);
+            ProcessInstance processInstance = processInstanceMap.get(task.getProcessInstanceId());
+            if (processInstance != null) {
+                AdminUserRespDTO startUser = userMap.get(NumberUtils.parseLong(processInstance.getStartUserId()));
+                respVO.setProcessInstance(convert(processInstance, startUser));
+            }
+            Map<String, String> extAttrMap = tasksExtAttrMap.get(task.getId());
+            respVO.setExtAttribute(extAttrMap);
+            return respVO;
+        });
+    }
+
     @Mapping(source = "suspended", target = "suspensionState", qualifiedByName = "convertSuspendedToSuspensionState")
     @Mapping(target = "claimTime", expression = "java(bean.getClaimTime()==null?null: LocalDateTime.ofInstant(bean.getClaimTime().toInstant(),ZoneId.systemDefault()))")
     @Mapping(target = "createTime", expression = "java(bean.getCreateTime()==null?null:LocalDateTime.ofInstant(bean.getCreateTime().toInstant(),ZoneId.systemDefault()))")
@@ -130,6 +147,34 @@ public interface BpmTaskConvert {
                     respVO.getAssigneeUser().setDeptName(dept.getName());
                 }
             }
+            return respVO;
+        });
+    }
+
+    default List<BpmTaskRespVO> convertList4(List<HistoricTaskInstance> tasks,
+                                             Map<String, BpmTaskExtDO> bpmTaskExtDOMap,
+                                             HistoricProcessInstance processInstance,
+                                             Map<Long, AdminUserRespDTO> userMap,
+                                             Map<Long, DeptRespDTO> deptMap,
+                                             Map<String, Map<String, String>> tasksExtAttrMap) {
+        return CollectionUtils.convertList(tasks, task -> {
+            BpmTaskRespVO respVO = convert3(task);
+            BpmTaskExtDO taskExtDO = bpmTaskExtDOMap.get(task.getId());
+            copyTo(taskExtDO, respVO);
+            if (processInstance != null) {
+                AdminUserRespDTO startUser = userMap.get(NumberUtils.parseLong(processInstance.getStartUserId()));
+                respVO.setProcessInstance(convert(processInstance, startUser));
+            }
+            AdminUserRespDTO assignUser = userMap.get(NumberUtils.parseLong(task.getAssignee()));
+            if (assignUser != null) {
+                respVO.setAssigneeUser(convert3(assignUser));
+                DeptRespDTO dept = deptMap.get(assignUser.getDeptId());
+                if (dept != null) {
+                    respVO.getAssigneeUser().setDeptName(dept.getName());
+                }
+            }
+            Map<String, String> extAttrMap = tasksExtAttrMap.get(task.getId());
+            respVO.setExtAttribute(extAttrMap);
             return respVO;
         });
     }

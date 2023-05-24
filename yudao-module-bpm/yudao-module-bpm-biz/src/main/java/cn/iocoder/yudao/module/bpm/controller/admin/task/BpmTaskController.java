@@ -48,7 +48,8 @@ public class BpmTaskController {
     @PreAuthorize("@ss.hasPermission('bpm:task:query')")
     public CommonResult<List<BpmTaskRespVO>> getTaskListByProcessInstanceId(
         @RequestParam("processInstanceId") String processInstanceId) {
-        return success(taskService.getTaskListByProcessInstanceId(processInstanceId));
+        List<BpmTaskRespVO> taskListByProcessInstanceId = taskService.getTaskListByProcessInstanceId(processInstanceId);
+        return success(taskListByProcessInstanceId);
     }
 
     @PutMapping("/approve")

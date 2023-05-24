@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 
 @Schema(description = "管理后台 - 流程任务的 Running 进行中的分页项 Response VO")
 @Data
@@ -24,6 +25,8 @@ public class BpmTaskTodoPageItemRespVO {
     @Schema(description = "激活状态-参见 SuspensionState 枚举", requiredMode = Schema.RequiredMode.REQUIRED, example = "1")
     private Integer suspensionState;
 
+    @Schema(description = "任务扩展属性", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+    private Map<String, String> extAttribute;
     /**
      * 所属流程实例
      */

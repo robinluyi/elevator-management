@@ -38,6 +38,9 @@ public class BpmProcessInstanceRespVO {
     @Schema(description = "业务的唯一标识-例如说，请假申请的编号", example = "1")
     private String businessKey;
 
+    @Schema(description = "任务扩展属性", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+    private Map<String, String> extAttribute;
+
     /**
      * 发起流程的用户
      */
