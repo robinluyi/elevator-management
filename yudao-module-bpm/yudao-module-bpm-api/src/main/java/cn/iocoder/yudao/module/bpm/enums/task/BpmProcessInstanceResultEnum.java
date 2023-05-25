@@ -18,10 +18,24 @@ public enum BpmProcessInstanceResultEnum {
     REJECT(3, "不通过"),
     CANCEL(4, "已取消"),
 
+
+
     // ========== 流程任务独有的状态 ==========
 
-    BACK(5, "退回/驳回");
+    BACK(5, "退回/驳回"),
 
+    // ========== 保险流程状态
+
+    SAVED(11,"已保存"),
+    SUBMITTED(12, "已报案"),
+    ACCEPTED(13,"已受理"),
+    REFILL(14,"待补充"),
+    TO_REVIEW(15,"待审核"),
+    REVIEWED(16,"已审核"),
+    TO_CONFIRM(17,"待确认"),
+    CONFIRMMED(18,"已确认"),
+
+    ;
     /**
      * 结果
      *
