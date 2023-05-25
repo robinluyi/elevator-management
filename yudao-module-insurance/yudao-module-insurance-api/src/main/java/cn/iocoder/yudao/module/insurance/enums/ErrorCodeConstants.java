@@ -14,4 +14,11 @@ public interface ErrorCodeConstants {
 
     // ========== 电梯报修申请 1-010-001-000 ==========
     ErrorCode REPARATION_NOT_EXISTS = new ErrorCode( 1010001001, "电梯报修申请不存在");
+
+    // ========== 报修零件子表 1-010-002-000 ==========
+    ErrorCode PART_NOT_EXISTS = new ErrorCode(1010002001, "报修零件子表不存在");
+
+    // ========== 故障信息子表 1-010-003-000  ==========
+    ErrorCode FAULTINFO_NOT_EXISTS = new ErrorCode(1010003001, "故障信息子表不存在");
+
 }
