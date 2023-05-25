@@ -76,54 +76,12 @@ public class ReparationDO extends BaseDO {
      */
     private String registrationId;
     /**
-     * 配件总价格
-     */
-    private Long totalPrice;
-    /**
-     * 配件名称
-     */
-    private String partName;
-    /**
-     * 单位
-     *
-     * 枚举 {@link TODO elevtr_part_unit 对应的类}
-     */
-    private Byte partUnitId;
-    /**
-     * 单价
-     */
-    private Integer partUnitPirce;
-    /**
-     * 数量
-     */
-    private Integer partQuantity;
-    /**
-     * 小计
-     */
-    private Byte partTotal;
-    /**
-     * 小区照片
-     */
-    private String communityPic;
-    /**
-     * 单元照片
-     */
-    private String unitPic;
-    /**
-     * 电梯照片
-     */
-    private String elevtrPic;
-    /**
-     * 故障现场照片
-     */
-    private String faultPic;
-    /**
-     * 故障现场照片
-     */
-    private String faultPic2;
-    /**
      * 流程实例的编号
      */
     private String processInstanceId;
+    /**
+     * 配件总价格
+     */
+    private Long totalPrice;
 
 }

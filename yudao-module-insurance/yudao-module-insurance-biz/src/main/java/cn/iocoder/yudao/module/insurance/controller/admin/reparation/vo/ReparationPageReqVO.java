@@ -51,44 +51,14 @@ public class ReparationPageReqVO extends PageParam {
     @Schema(description = "注册代码")
     private String registrationId;
 
-    @Schema(description = "配件总价格")
-    private Long totalPrice;
-
-    @Schema(description = "配件名称")
-    private String partName;
-
-    @Schema(description = "单位")
-    private Byte partUnitId;
-
-    @Schema(description = "单价")
-    private Integer partUnitPirce;
-
-    @Schema(description = "数量")
-    private Integer partQuantity;
-
-    @Schema(description = "小计")
-    private Byte partTotal;
-
-    @Schema(description = "小区照片")
-    private String communityPic;
-
-    @Schema(description = "单元照片")
-    private String unitPic;
-
-    @Schema(description = "电梯照片")
-    private String elevtrPic;
-
-    @Schema(description = "故障现场照片")
-    private String faultPic;
-
-    @Schema(description = "故障现场照片")
-    private String faultPic2;
-
     @Schema(description = "流程实例的编号")
     private String processInstanceId;
 
     @Schema(description = "创建时间")
     @DateTimeFormat(pattern = FORMAT_YEAR_MONTH_DAY_HOUR_MINUTE_SECOND)
     private LocalDateTime[] createTime;
+
+    @Schema(description = "配件总价格")
+    private Long totalPrice;
 
 }

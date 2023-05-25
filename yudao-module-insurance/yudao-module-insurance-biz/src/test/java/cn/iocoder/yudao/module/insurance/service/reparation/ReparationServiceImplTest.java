@@ -122,19 +122,9 @@ public class ReparationServiceImplTest extends BaseDbUnitTest {
            o.setMaintainDeptId(null);
            o.setMaintainDeptName(null);
            o.setRegistrationId(null);
-           o.setTotalPrice(null);
-           o.setPartName(null);
-           o.setPartUnitId(null);
-           o.setPartUnitPirce(null);
-           o.setPartQuantity(null);
-           o.setPartTotal(null);
-           o.setCommunityPic(null);
-           o.setUnitPic(null);
-           o.setElevtrPic(null);
-           o.setFaultPic(null);
-           o.setFaultPic2(null);
            o.setProcessInstanceId(null);
            o.setCreateTime(null);
+           o.setTotalPrice(null);
        });
        reparationMapper.insert(dbReparation);
        // 测试 userId 不匹配
@@ -161,32 +151,12 @@ public class ReparationServiceImplTest extends BaseDbUnitTest {
        reparationMapper.insert(cloneIgnoreId(dbReparation, o -> o.setMaintainDeptName(null)));
        // 测试 registrationId 不匹配
        reparationMapper.insert(cloneIgnoreId(dbReparation, o -> o.setRegistrationId(null)));
-       // 测试 totalPrice 不匹配
-       reparationMapper.insert(cloneIgnoreId(dbReparation, o -> o.setTotalPrice(null)));
-       // 测试 partName 不匹配
-       reparationMapper.insert(cloneIgnoreId(dbReparation, o -> o.setPartName(null)));
-       // 测试 partUnitId 不匹配
-       reparationMapper.insert(cloneIgnoreId(dbReparation, o -> o.setPartUnitId(null)));
-       // 测试 partUnitPirce 不匹配
-       reparationMapper.insert(cloneIgnoreId(dbReparation, o -> o.setPartUnitPirce(null)));
-       // 测试 partQuantity 不匹配
-       reparationMapper.insert(cloneIgnoreId(dbReparation, o -> o.setPartQuantity(null)));
-       // 测试 partTotal 不匹配
-       reparationMapper.insert(cloneIgnoreId(dbReparation, o -> o.setPartTotal(null)));
-       // 测试 communityPic 不匹配
-       reparationMapper.insert(cloneIgnoreId(dbReparation, o -> o.setCommunityPic(null)));
-       // 测试 unitPic 不匹配
-       reparationMapper.insert(cloneIgnoreId(dbReparation, o -> o.setUnitPic(null)));
-       // 测试 elevtrPic 不匹配
-       reparationMapper.insert(cloneIgnoreId(dbReparation, o -> o.setElevtrPic(null)));
-       // 测试 faultPic 不匹配
-       reparationMapper.insert(cloneIgnoreId(dbReparation, o -> o.setFaultPic(null)));
-       // 测试 faultPic2 不匹配
-       reparationMapper.insert(cloneIgnoreId(dbReparation, o -> o.setFaultPic2(null)));
        // 测试 processInstanceId 不匹配
        reparationMapper.insert(cloneIgnoreId(dbReparation, o -> o.setProcessInstanceId(null)));
        // 测试 createTime 不匹配
        reparationMapper.insert(cloneIgnoreId(dbReparation, o -> o.setCreateTime(null)));
+       // 测试 totalPrice 不匹配
+       reparationMapper.insert(cloneIgnoreId(dbReparation, o -> o.setTotalPrice(null)));
        // 准备参数
        ReparationPageReqVO reqVO = new ReparationPageReqVO();
        reqVO.setUserId(null);
@@ -201,19 +171,9 @@ public class ReparationServiceImplTest extends BaseDbUnitTest {
        reqVO.setMaintainDeptId(null);
        reqVO.setMaintainDeptName(null);
        reqVO.setRegistrationId(null);
-       reqVO.setTotalPrice(null);
-       reqVO.setPartName(null);
-       reqVO.setPartUnitId(null);
-       reqVO.setPartUnitPirce(null);
-       reqVO.setPartQuantity(null);
-       reqVO.setPartTotal(null);
-       reqVO.setCommunityPic(null);
-       reqVO.setUnitPic(null);
-       reqVO.setElevtrPic(null);
-       reqVO.setFaultPic(null);
-       reqVO.setFaultPic2(null);
        reqVO.setProcessInstanceId(null);
        reqVO.setCreateTime(buildBetweenTime(2023, 2, 1, 2023, 2, 28));
+       reqVO.setTotalPrice(null);
 
        // 调用
        PageResult<ReparationDO> pageResult = reparationService.getReparationPage(reqVO);
@@ -240,19 +200,9 @@ public class ReparationServiceImplTest extends BaseDbUnitTest {
            o.setMaintainDeptId(null);
            o.setMaintainDeptName(null);
            o.setRegistrationId(null);
-           o.setTotalPrice(null);
-           o.setPartName(null);
-           o.setPartUnitId(null);
-           o.setPartUnitPirce(null);
-           o.setPartQuantity(null);
-           o.setPartTotal(null);
-           o.setCommunityPic(null);
-           o.setUnitPic(null);
-           o.setElevtrPic(null);
-           o.setFaultPic(null);
-           o.setFaultPic2(null);
            o.setProcessInstanceId(null);
            o.setCreateTime(null);
+           o.setTotalPrice(null);
        });
        reparationMapper.insert(dbReparation);
        // 测试 userId 不匹配
@@ -279,32 +229,12 @@ public class ReparationServiceImplTest extends BaseDbUnitTest {
        reparationMapper.insert(cloneIgnoreId(dbReparation, o -> o.setMaintainDeptName(null)));
        // 测试 registrationId 不匹配
        reparationMapper.insert(cloneIgnoreId(dbReparation, o -> o.setRegistrationId(null)));
-       // 测试 totalPrice 不匹配
-       reparationMapper.insert(cloneIgnoreId(dbReparation, o -> o.setTotalPrice(null)));
-       // 测试 partName 不匹配
-       reparationMapper.insert(cloneIgnoreId(dbReparation, o -> o.setPartName(null)));
-       // 测试 partUnitId 不匹配
-       reparationMapper.insert(cloneIgnoreId(dbReparation, o -> o.setPartUnitId(null)));
-       // 测试 partUnitPirce 不匹配
-       reparationMapper.insert(cloneIgnoreId(dbReparation, o -> o.setPartUnitPirce(null)));
-       // 测试 partQuantity 不匹配
-       reparationMapper.insert(cloneIgnoreId(dbReparation, o -> o.setPartQuantity(null)));
-       // 测试 partTotal 不匹配
-       reparationMapper.insert(cloneIgnoreId(dbReparation, o -> o.setPartTotal(null)));
-       // 测试 communityPic 不匹配
-       reparationMapper.insert(cloneIgnoreId(dbReparation, o -> o.setCommunityPic(null)));
-       // 测试 unitPic 不匹配
-       reparationMapper.insert(cloneIgnoreId(dbReparation, o -> o.setUnitPic(null)));
-       // 测试 elevtrPic 不匹配
-       reparationMapper.insert(cloneIgnoreId(dbReparation, o -> o.setElevtrPic(null)));
-       // 测试 faultPic 不匹配
-       reparationMapper.insert(cloneIgnoreId(dbReparation, o -> o.setFaultPic(null)));
-       // 测试 faultPic2 不匹配
-       reparationMapper.insert(cloneIgnoreId(dbReparation, o -> o.setFaultPic2(null)));
        // 测试 processInstanceId 不匹配
        reparationMapper.insert(cloneIgnoreId(dbReparation, o -> o.setProcessInstanceId(null)));
        // 测试 createTime 不匹配
        reparationMapper.insert(cloneIgnoreId(dbReparation, o -> o.setCreateTime(null)));
+       // 测试 totalPrice 不匹配
+       reparationMapper.insert(cloneIgnoreId(dbReparation, o -> o.setTotalPrice(null)));
        // 准备参数
        ReparationExportReqVO reqVO = new ReparationExportReqVO();
        reqVO.setUserId(null);
@@ -319,19 +249,9 @@ public class ReparationServiceImplTest extends BaseDbUnitTest {
        reqVO.setMaintainDeptId(null);
        reqVO.setMaintainDeptName(null);
        reqVO.setRegistrationId(null);
-       reqVO.setTotalPrice(null);
-       reqVO.setPartName(null);
-       reqVO.setPartUnitId(null);
-       reqVO.setPartUnitPirce(null);
-       reqVO.setPartQuantity(null);
-       reqVO.setPartTotal(null);
-       reqVO.setCommunityPic(null);
-       reqVO.setUnitPic(null);
-       reqVO.setElevtrPic(null);
-       reqVO.setFaultPic(null);
-       reqVO.setFaultPic2(null);
        reqVO.setProcessInstanceId(null);
        reqVO.setCreateTime(buildBetweenTime(2023, 2, 1, 2023, 2, 28));
+       reqVO.setTotalPrice(null);
 
        // 调用
        List<ReparationDO> list = reparationService.getReparationList(reqVO);

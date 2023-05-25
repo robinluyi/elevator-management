@@ -31,19 +31,9 @@ public interface ReparationMapper extends BaseMapperX<ReparationDO> {
                 .eqIfPresent(ReparationDO::getMaintainDeptId, reqVO.getMaintainDeptId())
                 .likeIfPresent(ReparationDO::getMaintainDeptName, reqVO.getMaintainDeptName())
                 .eqIfPresent(ReparationDO::getRegistrationId, reqVO.getRegistrationId())
-                .eqIfPresent(ReparationDO::getTotalPrice, reqVO.getTotalPrice())
-                .likeIfPresent(ReparationDO::getPartName, reqVO.getPartName())
-                .eqIfPresent(ReparationDO::getPartUnitId, reqVO.getPartUnitId())
-                .eqIfPresent(ReparationDO::getPartUnitPirce, reqVO.getPartUnitPirce())
-                .eqIfPresent(ReparationDO::getPartQuantity, reqVO.getPartQuantity())
-                .eqIfPresent(ReparationDO::getPartTotal, reqVO.getPartTotal())
-                .eqIfPresent(ReparationDO::getCommunityPic, reqVO.getCommunityPic())
-                .eqIfPresent(ReparationDO::getUnitPic, reqVO.getUnitPic())
-                .eqIfPresent(ReparationDO::getElevtrPic, reqVO.getElevtrPic())
-                .eqIfPresent(ReparationDO::getFaultPic, reqVO.getFaultPic())
-                .eqIfPresent(ReparationDO::getFaultPic2, reqVO.getFaultPic2())
                 .eqIfPresent(ReparationDO::getProcessInstanceId, reqVO.getProcessInstanceId())
                 .betweenIfPresent(ReparationDO::getCreateTime, reqVO.getCreateTime())
+                .eqIfPresent(ReparationDO::getTotalPrice, reqVO.getTotalPrice())
                 .orderByDesc(ReparationDO::getId));
     }
 
@@ -61,19 +51,9 @@ public interface ReparationMapper extends BaseMapperX<ReparationDO> {
                 .eqIfPresent(ReparationDO::getMaintainDeptId, reqVO.getMaintainDeptId())
                 .likeIfPresent(ReparationDO::getMaintainDeptName, reqVO.getMaintainDeptName())
                 .eqIfPresent(ReparationDO::getRegistrationId, reqVO.getRegistrationId())
-                .eqIfPresent(ReparationDO::getTotalPrice, reqVO.getTotalPrice())
-                .likeIfPresent(ReparationDO::getPartName, reqVO.getPartName())
-                .eqIfPresent(ReparationDO::getPartUnitId, reqVO.getPartUnitId())
-                .eqIfPresent(ReparationDO::getPartUnitPirce, reqVO.getPartUnitPirce())
-                .eqIfPresent(ReparationDO::getPartQuantity, reqVO.getPartQuantity())
-                .eqIfPresent(ReparationDO::getPartTotal, reqVO.getPartTotal())
-                .eqIfPresent(ReparationDO::getCommunityPic, reqVO.getCommunityPic())
-                .eqIfPresent(ReparationDO::getUnitPic, reqVO.getUnitPic())
-                .eqIfPresent(ReparationDO::getElevtrPic, reqVO.getElevtrPic())
-                .eqIfPresent(ReparationDO::getFaultPic, reqVO.getFaultPic())
-                .eqIfPresent(ReparationDO::getFaultPic2, reqVO.getFaultPic2())
                 .eqIfPresent(ReparationDO::getProcessInstanceId, reqVO.getProcessInstanceId())
                 .betweenIfPresent(ReparationDO::getCreateTime, reqVO.getCreateTime())
+                .eqIfPresent(ReparationDO::getTotalPrice, reqVO.getTotalPrice())
                 .orderByDesc(ReparationDO::getId));
     }
 

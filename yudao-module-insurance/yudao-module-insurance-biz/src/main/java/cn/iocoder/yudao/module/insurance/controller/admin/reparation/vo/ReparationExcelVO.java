@@ -7,9 +7,6 @@ import java.time.LocalDateTime;
 import java.time.LocalDateTime;
 
 import com.alibaba.excel.annotation.ExcelProperty;
-import cn.iocoder.yudao.framework.excel.core.annotations.DictFormat;
-import cn.iocoder.yudao.framework.excel.core.convert.DictConvert;
-
 
 /**
  * 电梯报修申请 Excel VO
@@ -58,44 +55,13 @@ public class ReparationExcelVO {
     @ExcelProperty("注册代码")
     private String registrationId;
 
-    @ExcelProperty("配件总价格")
-    private Long totalPrice;
-
-    @ExcelProperty("配件名称")
-    private String partName;
-
-    @ExcelProperty(value = "单位", converter = DictConvert.class)
-    @DictFormat("elevtr_part_unit") // TODO 代码优化：建议设置到对应的 XXXDictTypeConstants 枚举类中
-    private Byte partUnitId;
-
-    @ExcelProperty("单价")
-    private Integer partUnitPirce;
-
-    @ExcelProperty("数量")
-    private Integer partQuantity;
-
-    @ExcelProperty("小计")
-    private Byte partTotal;
-
-    @ExcelProperty("小区照片")
-    private String communityPic;
-
-    @ExcelProperty("单元照片")
-    private String unitPic;
-
-    @ExcelProperty("电梯照片")
-    private String elevtrPic;
-
-    @ExcelProperty("故障现场照片")
-    private String faultPic;
-
-    @ExcelProperty("故障现场照片")
-    private String faultPic2;
-
     @ExcelProperty("流程实例的编号")
     private String processInstanceId;
 
     @ExcelProperty("创建时间")
     private LocalDateTime createTime;
+
+    @ExcelProperty("配件总价格")
+    private Long totalPrice;
 
 }
