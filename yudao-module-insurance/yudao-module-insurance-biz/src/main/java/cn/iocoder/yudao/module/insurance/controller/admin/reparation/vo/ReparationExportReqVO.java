@@ -29,7 +29,7 @@ public class ReparationExportReqVO {
     private Long endusageDeptId;
 
     @Schema(description = "使用单位")
-    private Long endusageDeptName;
+    private String endusageDeptName;
 
     @Schema(description = "使用单位负责人")
     private Long endusageDeptManagerId;
@@ -44,7 +44,7 @@ public class ReparationExportReqVO {
     private Long maintainDeptId;
 
     @Schema(description = "维保单位")
-    private Long maintainDeptName;
+    private String maintainDeptName;
 
     @Schema(description = "注册代码")
     private String registrationId;
@@ -58,7 +58,7 @@ public class ReparationExportReqVO {
     @Schema(description = "单位")
     private Byte partUnitId;
 
-    @Schema(description = "单价", example = "个")
+    @Schema(description = "单价")
     private Integer partUnitPirce;
 
     @Schema(description = "数量")
@@ -82,7 +82,7 @@ public class ReparationExportReqVO {
     @Schema(description = "故障现场照片")
     private String faultPic2;
 
-    @Schema(description = "流程实例的编号", example = "25388")
+    @Schema(description = "流程实例的编号")
     private String processInstanceId;
 
     @Schema(description = "创建时间")

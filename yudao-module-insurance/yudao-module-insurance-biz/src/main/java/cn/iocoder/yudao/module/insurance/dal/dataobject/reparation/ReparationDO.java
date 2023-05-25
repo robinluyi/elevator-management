@@ -50,7 +50,7 @@ public class ReparationDO extends BaseDO {
     /**
      * 使用单位
      */
-    private Long endusageDeptName;
+    private String endusageDeptName;
     /**
      * 使用单位负责人
      */
@@ -70,7 +70,7 @@ public class ReparationDO extends BaseDO {
     /**
      * 维保单位
      */
-    private Long maintainDeptName;
+    private String maintainDeptName;
     /**
      * 注册代码
      */
@@ -85,12 +85,12 @@ public class ReparationDO extends BaseDO {
     private String partName;
     /**
      * 单位
+     *
+     * 枚举 {@link TODO elevtr_part_unit 对应的类}
      */
     private Byte partUnitId;
     /**
      * 单价
-     *
-     * 枚举 {@link TODO elevtr_part_unit 对应的类}
      */
     private Integer partUnitPirce;
     /**

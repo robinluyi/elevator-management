@@ -34,7 +34,7 @@ public class ReparationBaseVO {
     private Long endusageDeptId;
 
     @Schema(description = "使用单位")
-    private Long endusageDeptName;
+    private String endusageDeptName;
 
     @Schema(description = "使用单位负责人")
     private Long endusageDeptManagerId;
@@ -51,7 +51,7 @@ public class ReparationBaseVO {
     private Long maintainDeptId;
 
     @Schema(description = "维保单位")
-    private Long maintainDeptName;
+    private String maintainDeptName;
 
     @Schema(description = "注册代码")
     private String registrationId;
@@ -67,7 +67,7 @@ public class ReparationBaseVO {
     @NotNull(message = "单位不能为空")
     private Byte partUnitId;
 
-    @Schema(description = "单价", requiredMode = Schema.RequiredMode.REQUIRED, example = "个")
+    @Schema(description = "单价", requiredMode = Schema.RequiredMode.REQUIRED)
     @NotNull(message = "单价不能为空")
     private Integer partUnitPirce;
 
@@ -94,7 +94,7 @@ public class ReparationBaseVO {
     @Schema(description = "故障现场照片")
     private String faultPic2;
 
-    @Schema(description = "流程实例的编号", example = "25388")
+    @Schema(description = "流程实例的编号")
     private String processInstanceId;
 
 }

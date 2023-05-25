@@ -38,7 +38,7 @@ public class ReparationExcelVO {
     private Long endusageDeptId;
 
     @ExcelProperty("使用单位")
-    private Long endusageDeptName;
+    private String endusageDeptName;
 
     @ExcelProperty("使用单位负责人")
     private Long endusageDeptManagerId;
@@ -53,7 +53,7 @@ public class ReparationExcelVO {
     private Long maintainDeptId;
 
     @ExcelProperty("维保单位")
-    private Long maintainDeptName;
+    private String maintainDeptName;
 
     @ExcelProperty("注册代码")
     private String registrationId;
@@ -64,11 +64,11 @@ public class ReparationExcelVO {
     @ExcelProperty("配件名称")
     private String partName;
 
-    @ExcelProperty("单位")
+    @ExcelProperty(value = "单位", converter = DictConvert.class)
+    @DictFormat("elevtr_part_unit") // TODO 代码优化：建议设置到对应的 XXXDictTypeConstants 枚举类中
     private Byte partUnitId;
 
-    @ExcelProperty(value = "单价", converter = DictConvert.class)
-    @DictFormat("elevtr_part_unit") // TODO 代码优化：建议设置到对应的 XXXDictTypeConstants 枚举类中
+    @ExcelProperty("单价")
     private Integer partUnitPirce;
 
     @ExcelProperty("数量")
