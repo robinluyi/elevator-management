@@ -10,6 +10,7 @@ import cn.iocoder.yudao.module.bpm.convert.oa.BpmOALeaveConvert;
 import cn.iocoder.yudao.module.bpm.dal.dataobject.oa.BpmOALeaveDO;
 import cn.iocoder.yudao.module.bpm.dal.mysql.oa.BpmOALeaveMapper;
 import cn.iocoder.yudao.module.bpm.enums.task.BpmProcessInstanceResultEnum;
+import cn.iocoder.yudao.module.bpm.framework.flowable.core.behavior.script.impl.BpmTaskAssignByExtAttrScript;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
@@ -35,6 +36,7 @@ public class BpmOALeaveServiceImpl implements BpmOALeaveService {
      * OA 请假对应的流程定义 KEY
      */
     public static final String PROCESS_KEY = "oa_leave";
+    //public static final String PROCESS_KEY = "Insurance_reporting_proc_test";
 
     @Resource
     private BpmOALeaveMapper leaveMapper;
@@ -54,6 +56,8 @@ public class BpmOALeaveServiceImpl implements BpmOALeaveService {
         // 发起 BPM 流程
         Map<String, Object> processInstanceVariables = new HashMap<>();
         processInstanceVariables.put("day", day);
+        processInstanceVariables.put("path", 1);
+        processInstanceVariables.put("endusage_dept_manager_id", 133L);
         String processInstanceId = processInstanceApi.createProcessInstance(userId,
                 new BpmProcessInstanceCreateReqDTO().setProcessDefinitionKey(PROCESS_KEY)
                         .setVariables(processInstanceVariables).setBusinessKey(String.valueOf(leave.getId())));

@@ -234,9 +234,12 @@ public class BpmTaskServiceImpl implements BpmTaskService {
         if (instance == null) {
             throw exception(PROCESS_INSTANCE_NOT_EXISTS);
         }
+        //Map<String, Object> variables = taskService.getVariables(reqVO.getId());
+        Map<String, Object> processVariables = instance.getProcessVariables();
+        processVariables.put("taskApprovedBy",userId);
 
-        // 完成任务，审批通过
-        taskService.complete(task.getId(), instance.getProcessVariables());
+        // 完成任务，审批通过Ï
+        taskService.complete(task.getId(),processVariables );
 
         // 更新任务拓展表为通过
         taskExtMapper.updateByTaskId(
@@ -290,6 +293,7 @@ public class BpmTaskServiceImpl implements BpmTaskService {
         if (!Objects.equals(userId, NumberUtils.parseLong(task.getAssignee()))) {
             throw exception(TASK_COMPLETE_FAIL_ASSIGN_NOT_SELF);
         }
+        task.getProcessVariables();
         return task;
     }
 
