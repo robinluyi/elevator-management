@@ -1,25 +1,23 @@
 package cn.iocoder.yudao.module.bpm.service.task;
 
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.collection.ListUtil;
-import cn.hutool.core.util.ArrayUtil;
-import cn.hutool.core.util.StrUtil;
-import cn.iocoder.yudao.framework.common.pojo.PageResult;
-import cn.iocoder.yudao.framework.common.util.date.DateUtils;
-import cn.iocoder.yudao.framework.common.util.number.NumberUtils;
-import cn.iocoder.yudao.framework.common.util.object.PageUtils;
-import cn.iocoder.yudao.module.bpm.controller.admin.task.vo.task.*;
-import cn.iocoder.yudao.module.bpm.convert.task.BpmTaskConvert;
-import cn.iocoder.yudao.module.bpm.dal.dataobject.task.BpmTaskExtDO;
-import cn.iocoder.yudao.module.bpm.dal.mysql.task.BpmTaskExtMapper;
-import cn.iocoder.yudao.module.bpm.enums.task.BpmProcessInstanceDeleteReasonEnum;
-import cn.iocoder.yudao.module.bpm.enums.task.BpmProcessInstanceResultEnum;
-import cn.iocoder.yudao.module.bpm.service.message.BpmMessageService;
-import cn.iocoder.yudao.module.system.api.dept.DeptApi;
-import cn.iocoder.yudao.module.system.api.dept.dto.DeptRespDTO;
-import cn.iocoder.yudao.module.system.api.user.AdminUserApi;
-import cn.iocoder.yudao.module.system.api.user.dto.AdminUserRespDTO;
-import lombok.extern.slf4j.Slf4j;
+import static cn.iocoder.yudao.framework.common.exception.util.ServiceExceptionUtil.exception;
+import static cn.iocoder.yudao.framework.common.util.collection.CollectionUtils.convertMap;
+import static cn.iocoder.yudao.framework.common.util.collection.CollectionUtils.convertSet;
+import static cn.iocoder.yudao.module.bpm.enums.ErrorCodeConstants.PROCESS_INSTANCE_NOT_EXISTS;
+import static cn.iocoder.yudao.module.bpm.enums.ErrorCodeConstants.TASK_COMPLETE_FAIL_ASSIGN_NOT_SELF;
+import static cn.iocoder.yudao.module.bpm.enums.ErrorCodeConstants.TASK_COMPLETE_FAIL_NOT_EXISTS;
+
+import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+
+import javax.annotation.Resource;
+import javax.validation.Valid;
+
 import org.flowable.bpmn.model.BpmnModel;
 import org.flowable.bpmn.model.ExtensionAttribute;
 import org.flowable.bpmn.model.ExtensionElement;
@@ -33,21 +31,37 @@ import org.flowable.task.api.Task;
 import org.flowable.task.api.TaskQuery;
 import org.flowable.task.api.history.HistoricTaskInstance;
 import org.flowable.task.api.history.HistoricTaskInstanceQuery;
-import org.flowable.task.service.impl.persistence.entity.TaskEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionSynchronization;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
-import javax.annotation.Resource;
-import javax.validation.Valid;
-import java.time.LocalDateTime;
-import java.util.*;
-
-import static cn.iocoder.yudao.framework.common.exception.util.ServiceExceptionUtil.exception;
-import static cn.iocoder.yudao.framework.common.util.collection.CollectionUtils.convertMap;
-import static cn.iocoder.yudao.framework.common.util.collection.CollectionUtils.convertSet;
-import static cn.iocoder.yudao.module.bpm.enums.ErrorCodeConstants.*;
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.ArrayUtil;
+import cn.hutool.core.util.StrUtil;
+import cn.iocoder.yudao.framework.common.pojo.PageResult;
+import cn.iocoder.yudao.framework.common.util.date.DateUtils;
+import cn.iocoder.yudao.framework.common.util.number.NumberUtils;
+import cn.iocoder.yudao.framework.common.util.object.PageUtils;
+import cn.iocoder.yudao.module.bpm.controller.admin.task.vo.task.BpmTaskApproveReqVO;
+import cn.iocoder.yudao.module.bpm.controller.admin.task.vo.task.BpmTaskDonePageItemRespVO;
+import cn.iocoder.yudao.module.bpm.controller.admin.task.vo.task.BpmTaskDonePageReqVO;
+import cn.iocoder.yudao.module.bpm.controller.admin.task.vo.task.BpmTaskRejectReqVO;
+import cn.iocoder.yudao.module.bpm.controller.admin.task.vo.task.BpmTaskRespVO;
+import cn.iocoder.yudao.module.bpm.controller.admin.task.vo.task.BpmTaskTodoPageItemRespVO;
+import cn.iocoder.yudao.module.bpm.controller.admin.task.vo.task.BpmTaskTodoPageReqVO;
+import cn.iocoder.yudao.module.bpm.controller.admin.task.vo.task.BpmTaskUpdateAssigneeReqVO;
+import cn.iocoder.yudao.module.bpm.convert.task.BpmTaskConvert;
+import cn.iocoder.yudao.module.bpm.dal.dataobject.task.BpmTaskExtDO;
+import cn.iocoder.yudao.module.bpm.dal.mysql.task.BpmTaskExtMapper;
+import cn.iocoder.yudao.module.bpm.enums.task.BpmProcessInstanceDeleteReasonEnum;
+import cn.iocoder.yudao.module.bpm.enums.task.BpmProcessInstanceResultEnum;
+import cn.iocoder.yudao.module.bpm.service.message.BpmMessageService;
+import cn.iocoder.yudao.module.system.api.dept.DeptApi;
+import cn.iocoder.yudao.module.system.api.dept.dto.DeptRespDTO;
+import cn.iocoder.yudao.module.system.api.user.AdminUserApi;
+import cn.iocoder.yudao.module.system.api.user.dto.AdminUserRespDTO;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 流程任务实例 Service 实现类

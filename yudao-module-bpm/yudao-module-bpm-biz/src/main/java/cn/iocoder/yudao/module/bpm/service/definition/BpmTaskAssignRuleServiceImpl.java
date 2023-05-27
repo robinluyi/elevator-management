@@ -278,7 +278,7 @@ public class BpmTaskAssignRuleServiceImpl implements BpmTaskAssignRuleService {
         if (CollUtil.isEmpty(assigneeUserIds)) {
             log.error("[calculateTaskCandidateUsers][流程任务({}/{}/{}) 任务规则({}) 找不到候选人]", execution.getId(),
                     execution.getProcessDefinitionId(), execution.getCurrentActivityId(), toJsonString(rule));
-            throw exception(TASK_CREATE_FAIL_NO_CANDIDATE_USER);
+            throw  exception(TASK_CREATE_FAIL_NO_CANDIDATE_USER);
         }
         return assigneeUserIds;
     }

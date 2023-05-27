@@ -1,0 +1,6 @@
+### 请求 /infra/test-demo/get 接口 => 成功
+GET {{baseUrl}}/bpm/button/get?id=106
+Authorization: Bearer {{token}}
+tenant-id: {{adminTenentId}}
+
+

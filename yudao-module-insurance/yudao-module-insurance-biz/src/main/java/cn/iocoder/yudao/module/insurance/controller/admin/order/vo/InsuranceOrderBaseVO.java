@@ -1,13 +1,9 @@
 package cn.iocoder.yudao.module.insurance.controller.admin.order.vo;
 
+import javax.validation.constraints.NotNull;
+
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.*;
-import java.util.*;
-import java.time.LocalDateTime;
-import java.time.LocalDateTime;
-import java.time.LocalDateTime;
-import java.time.LocalDateTime;
-import javax.validation.constraints.*;
+import lombok.Data;
 
 /**
  * 保单 Base VO，提供给添加、修改、详细的子 VO 使用
