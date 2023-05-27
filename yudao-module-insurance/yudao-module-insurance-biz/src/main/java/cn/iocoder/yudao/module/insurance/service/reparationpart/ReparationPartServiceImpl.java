@@ -60,12 +60,21 @@ public class ReparationPartServiceImpl implements ReparationPartService {
 
 
     @Override
-    public Long createReparationPart(Long id, ReparationPartCreateReqVO createReqVO) {
+    public Long createReparationPart(Long userId, ReparationPartCreateReqVO createReqVO) {
+          createReqVO.setUserId(userId);
           Long total = createReqVO.getTotalPrice();
+          Long reparationId = reparationService.create(createReqVO);
+         
           List<PartDO> partDOList = PartConvert.INSTANCE.convertList3(createReqVO.getParts());
+
+
           partDOList.forEach(partDO -> {
-                partDO.setReparationId();
+                partDO.setReparationId(reparationId);
+                partDO.setUserId(userId);
+                
           });
+          
+
 // 插入 OA 请假单
 //        long day = LocalDateTimeUtil.between(createReqVO.getStartTime(), createReqVO.getEndTime()).toDays();
 //        BpmOALeaveDO leave = BpmOALeaveConvert.INSTANCE.convert(createReqVO).setUserId(userId).setDay(day)
