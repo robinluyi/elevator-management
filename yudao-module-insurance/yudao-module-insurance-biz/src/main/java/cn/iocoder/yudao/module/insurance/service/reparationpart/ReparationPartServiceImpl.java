@@ -1,5 +1,6 @@
 package cn.iocoder.yudao.module.insurance.service.reparationpart;
 
+import cn.hutool.core.date.LocalDateTimeUtil;
 import cn.iocoder.yudao.framework.common.pojo.PageResult;
 import cn.iocoder.yudao.module.insurance.controller.admin.part.vo.PartPageReqVO;
 import cn.iocoder.yudao.module.insurance.controller.admin.part.vo.PartRespVO;
@@ -22,7 +23,9 @@ import org.springframework.validation.annotation.Validated;
 
 import javax.annotation.Resource;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static cn.iocoder.yudao.framework.common.exception.util.ServiceExceptionUtil.exception;
 import static cn.iocoder.yudao.module.insurance.enums.ErrorCodeConstants.REPARATION_NOT_EXISTS;
@@ -58,11 +61,30 @@ public class ReparationPartServiceImpl implements ReparationPartService {
 
     @Override
     public Long createReparationPart(Long id, ReparationPartCreateReqVO createReqVO) {
-        // 插入
-        //ReparationDO reparation = ReparationConvert.INSTANCE.convert(createReqVO);
-        //reparationMapper.insert(reparation);
-        // 返回
-        //return reparation.getId();
+          Long total = createReqVO.getTotalPrice();
+          List<PartDO> partDOList = PartConvert.INSTANCE.convertList3(createReqVO.getParts());
+          partDOList.forEach(partDO -> {
+                partDO.setReparationId();
+          });
+// 插入 OA 请假单
+//        long day = LocalDateTimeUtil.between(createReqVO.getStartTime(), createReqVO.getEndTime()).toDays();
+//        BpmOALeaveDO leave = BpmOALeaveConvert.INSTANCE.convert(createReqVO).setUserId(userId).setDay(day)
+//                .setResult(BpmProcessInstanceResultEnum.PROCESS.getResult());
+//        leaveMapper.insert(leave);
+//
+//        // 发起 BPM 流程
+//        Map<String, Object> processInstanceVariables = new HashMap<>();
+//        processInstanceVariables.put("day", day);
+//        processInstanceVariables.put("path", 1);
+//        processInstanceVariables.put("total", 10000);
+//        processInstanceVariables.put("endusage_dept_manager_id", 133L);
+//        String processInstanceId = processInstanceApi.createProcessInstance(userId,
+//                new BpmProcessInstanceCreateReqDTO().setProcessDefinitionKey(PROCESS_KEY)
+//                        .setVariables(processInstanceVariables).setBusinessKey(String.valueOf(leave.getId())));
+//
+//        // 将工作流的编号，更新到 OA 请假单中
+//        leaveMapper.updateById(new BpmOALeaveDO().setId(leave.getId()).setProcessInstanceId(processInstanceId));
+//        return leave.getId();
         return null;
     }
 

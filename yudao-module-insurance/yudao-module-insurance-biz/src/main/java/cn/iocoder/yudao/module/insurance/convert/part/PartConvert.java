@@ -31,4 +31,5 @@ public interface PartConvert {
 
     List<PartExcelVO> convertList02(List<PartDO> list);
 
+    List<PartDO> convertList3(List<PartCreateReqVO> parts);
 }
