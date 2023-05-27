@@ -4,6 +4,7 @@ import java.util.*;
 
 import cn.iocoder.yudao.framework.common.pojo.PageResult;
 
+import cn.iocoder.yudao.module.insurance.controller.admin.reparationpart.vo.ReparationPartRespVO;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 import cn.iocoder.yudao.module.insurance.controller.admin.reparation.vo.*;
@@ -30,5 +31,7 @@ public interface ReparationConvert {
     PageResult<ReparationRespVO> convertPage(PageResult<ReparationDO> page);
 
     List<ReparationExcelVO> convertList02(List<ReparationDO> list);
+
+    ReparationPartRespVO convert2(ReparationRespVO reparationRespVO);
 
 }
