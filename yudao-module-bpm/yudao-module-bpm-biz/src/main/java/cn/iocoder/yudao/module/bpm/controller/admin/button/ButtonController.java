@@ -36,36 +36,36 @@ public class ButtonController {
         vo.setId("1");
         vo.setType("success");
         vo.setIcon("ep:select");
-        vo.setText("通过哈");
+        vo.setText("通过");
         vo.setPath("1");
-        vo.setTask("step1");
+        vo.setTask("reparationStep3");
         list.add(vo);
 
         vo = new InsuranceButtonRespVO();
         vo.setId("2");
         vo.setType("danger");
         vo.setIcon("ep:close");
-        vo.setText("拒赔哈");
+        vo.setText("拒赔");
         vo.setPath("0");
-        vo.setTask("step1");
+        vo.setTask("reparationStep3");
         list.add(vo);
 
         vo = new InsuranceButtonRespVO();
         vo.setId("3");
         vo.setType("primary");
-        vo.setIcon("ep:save");
-        vo.setText("退回哈");
+        vo.setIcon("ep:back");
+        vo.setText("退回-物业确认");
         vo.setPath("-1");
-        vo.setTask("step1");
+        vo.setTask("reparationStep3");
         list.add(vo);
 
         vo = new InsuranceButtonRespVO();
         vo.setId("4");
         vo.setType("warning");
         vo.setIcon("ep:back");
-        vo.setText("退回到xxx哈");
+        vo.setText("退回-维保确认");
         vo.setPath("-2");
-        vo.setTask("step1");
+        vo.setTask("reparationStep3");
         list.add(vo);
 
         return success(list);

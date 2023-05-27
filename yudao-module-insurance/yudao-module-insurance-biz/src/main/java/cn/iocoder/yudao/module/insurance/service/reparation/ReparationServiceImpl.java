@@ -23,6 +23,10 @@ import static cn.iocoder.yudao.module.insurance.enums.ErrorCodeConstants.*;
 @Service
 @Validated
 public class ReparationServiceImpl implements ReparationService {
+    /**
+     * OA 请假对应的流程定义 KEY
+     */
+    public static final String PROCESS_KEY = "Insurance_reporting_proc_test";
 
     @Resource
     private ReparationMapper reparationMapper;

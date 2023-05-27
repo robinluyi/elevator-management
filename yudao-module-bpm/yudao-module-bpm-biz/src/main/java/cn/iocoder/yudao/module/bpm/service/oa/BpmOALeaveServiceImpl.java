@@ -35,8 +35,8 @@ public class BpmOALeaveServiceImpl implements BpmOALeaveService {
     /**
      * OA 请假对应的流程定义 KEY
      */
-    public static final String PROCESS_KEY = "oa_leave";
-    //public static final String PROCESS_KEY = "Insurance_reporting_proc_test";
+    //public static final String PROCESS_KEY = "oa_leave";
+    public static final String PROCESS_KEY = "Insurance_reporting_proc_test";
 
     @Resource
     private BpmOALeaveMapper leaveMapper;
@@ -57,6 +57,7 @@ public class BpmOALeaveServiceImpl implements BpmOALeaveService {
         Map<String, Object> processInstanceVariables = new HashMap<>();
         processInstanceVariables.put("day", day);
         processInstanceVariables.put("path", 1);
+        processInstanceVariables.put("total", 10000);
         processInstanceVariables.put("endusage_dept_manager_id", 133L);
         String processInstanceId = processInstanceApi.createProcessInstance(userId,
                 new BpmProcessInstanceCreateReqDTO().setProcessDefinitionKey(PROCESS_KEY)

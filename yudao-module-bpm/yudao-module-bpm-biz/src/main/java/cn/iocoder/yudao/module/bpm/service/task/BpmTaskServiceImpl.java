@@ -251,7 +251,7 @@ public class BpmTaskServiceImpl implements BpmTaskService {
         //Map<String, Object> variables = taskService.getVariables(reqVO.getId());
         Map<String, Object> processVariables = instance.getProcessVariables();
         processVariables.put("taskApprovedBy",userId);
-
+        processVariables.put("path", reqVO.getPath());
         // 完成任务，审批通过Ï
         taskService.complete(task.getId(),processVariables );
 
@@ -371,6 +371,18 @@ public class BpmTaskServiceImpl implements BpmTaskService {
                 ProcessInstance processInstance =
                     processInstanceService.getProcessInstance(task.getProcessInstanceId());
                 AdminUserRespDTO startUser = adminUserApi.getUser(Long.valueOf(processInstance.getStartUserId()));
+                if (startUser == null) {
+                    //TODO BUG: WHY SEARCH Starter user in group 133?   Current approve of step 2 is in 133 group. starter is an admin and it's user id = 1;
+                    /*
+                    * | ==>  Preparing: SELECT id, username, password, nickname, remark, dept_id, post_ids, email, mobile, sex, avatar,
+                    * status, login_ip, login_date, tenant_id, create_time, update_time, creator, updater, deleted
+                    * FROM system_users WHERE id = ? AND deleted = 0 AND tenant_id = 1 AND system_users.dept_id IN (115)
+2023-05-27 11:41:01.846 | DEBUG 68793 | http-nio-48080-exec-5 [TID: N/A] c.i.y.m.s.d.m.u.A.selectById             | ==> Parameters: 1(Long)
+2023-05-27 11:41:01.849 | DEBUG 68793 | http-nio-48080-exec-5 [TID: N/A] c.i.y.m.s.d.m.u.A.selectById             | <==      Total: 0
+2023-05-27 11:41:01.859 | ERROR 68793 | http-nio-48080-exec-5 [TID: N/A] c.i.y.f.w.c.h.GlobalExceptionHandler     | [defaultExceptionHandler]
+                    * */
+                    return;
+                }
                 messageService.sendMessageWhenTaskAssigned(
                     BpmTaskConvert.INSTANCE.convert(processInstance, startUser, task));
             }
