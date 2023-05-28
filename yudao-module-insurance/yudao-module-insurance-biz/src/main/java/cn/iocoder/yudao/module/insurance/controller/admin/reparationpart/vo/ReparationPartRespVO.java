@@ -1,5 +1,7 @@
 package cn.iocoder.yudao.module.insurance.controller.admin.reparationpart.vo;
 
+import cn.iocoder.yudao.module.insurance.controller.admin.faultinfo.vo.FaultinfoCreateReqVO;
+import cn.iocoder.yudao.module.insurance.controller.admin.faultinfo.vo.FaultinfoRespVO;
 import cn.iocoder.yudao.module.insurance.controller.admin.part.vo.PartCreateReqVO;
 import cn.iocoder.yudao.module.insurance.controller.admin.part.vo.PartRespVO;
 import cn.iocoder.yudao.module.insurance.controller.admin.reparation.vo.ReparationRespVO;
@@ -23,5 +25,6 @@ public class ReparationPartRespVO extends ReparationRespVO {
 
     @Schema(description = "零件列表", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     public List<PartRespVO> parts;
-
+    @Schema(description = "故障列表", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+    public List<FaultinfoRespVO> faults;
 }

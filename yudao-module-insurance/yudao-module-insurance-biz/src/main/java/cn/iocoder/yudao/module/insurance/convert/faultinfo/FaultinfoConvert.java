@@ -4,6 +4,9 @@ import java.util.*;
 
 import cn.iocoder.yudao.framework.common.pojo.PageResult;
 
+import cn.iocoder.yudao.module.insurance.controller.admin.part.vo.PartCreateReqVO;
+import cn.iocoder.yudao.module.insurance.controller.admin.part.vo.PartRespVO;
+import cn.iocoder.yudao.module.insurance.dal.dataobject.part.PartDO;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 import cn.iocoder.yudao.module.insurance.controller.admin.faultinfo.vo.*;
@@ -30,5 +33,7 @@ public interface FaultinfoConvert {
     PageResult<FaultinfoRespVO> convertPage(PageResult<FaultinfoDO> page);
 
     List<FaultinfoExcelVO> convertList02(List<FaultinfoDO> list);
+
+    List<FaultinfoDO> convertList03(List<FaultinfoCreateReqVO> parts);
 
 }

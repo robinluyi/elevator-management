@@ -1,5 +1,6 @@
 package cn.iocoder.yudao.module.insurance.dal.mysql.faultinfo;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 import cn.iocoder.yudao.framework.common.pojo.PageResult;

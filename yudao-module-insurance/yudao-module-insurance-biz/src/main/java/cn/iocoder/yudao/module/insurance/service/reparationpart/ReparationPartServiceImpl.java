@@ -1,10 +1,29 @@
 package cn.iocoder.yudao.module.insurance.service.reparationpart;
 
-import cn.hutool.core.date.LocalDateTimeUtil;
+import static cn.iocoder.yudao.framework.common.exception.util.ServiceExceptionUtil.exception;
+import static cn.iocoder.yudao.module.insurance.enums.ErrorCodeConstants.REPARATION_NOT_EXISTS;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import cn.iocoder.yudao.module.bpm.api.task.BpmProcessInstanceApi;
+import cn.iocoder.yudao.module.bpm.api.task.dto.BpmProcessInstanceCreateReqDTO;
+import cn.iocoder.yudao.module.insurance.controller.admin.faultinfo.vo.FaultinfoPageReqVO;
+import cn.iocoder.yudao.module.insurance.controller.admin.faultinfo.vo.FaultinfoRespVO;
+import cn.iocoder.yudao.module.insurance.convert.faultinfo.FaultinfoConvert;
+import cn.iocoder.yudao.module.insurance.dal.dataobject.faultinfo.FaultinfoDO;
+import cn.iocoder.yudao.module.insurance.service.faultinfo.FaultinfoService;
+import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
+
 import cn.iocoder.yudao.framework.common.pojo.PageResult;
 import cn.iocoder.yudao.module.insurance.controller.admin.part.vo.PartPageReqVO;
 import cn.iocoder.yudao.module.insurance.controller.admin.part.vo.PartRespVO;
-import cn.iocoder.yudao.module.insurance.controller.admin.reparation.vo.*;
+import cn.iocoder.yudao.module.insurance.controller.admin.reparation.vo.ReparationRespVO;
 import cn.iocoder.yudao.module.insurance.controller.admin.reparationpart.vo.ReparationPartCreateReqVO;
 import cn.iocoder.yudao.module.insurance.controller.admin.reparationpart.vo.ReparationPartPageReqVO;
 import cn.iocoder.yudao.module.insurance.controller.admin.reparationpart.vo.ReparationPartRespVO;
@@ -18,17 +37,6 @@ import cn.iocoder.yudao.module.insurance.dal.mysql.part.PartMapper;
 import cn.iocoder.yudao.module.insurance.dal.mysql.reparation.ReparationMapper;
 import cn.iocoder.yudao.module.insurance.service.part.PartService;
 import cn.iocoder.yudao.module.insurance.service.reparation.ReparationService;
-import org.springframework.stereotype.Service;
-import org.springframework.validation.annotation.Validated;
-
-import javax.annotation.Resource;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static cn.iocoder.yudao.framework.common.exception.util.ServiceExceptionUtil.exception;
-import static cn.iocoder.yudao.module.insurance.enums.ErrorCodeConstants.REPARATION_NOT_EXISTS;
 
 /**
  * 电梯报修申请 Service 实现类
@@ -56,45 +64,53 @@ public class ReparationPartServiceImpl implements ReparationPartService {
     private ReparationService reparationService;
 
     @Resource
+    private FaultinfoService faultinfoService;
+
+    @Resource
     private PartService partService;
+    @Resource
+    private BpmProcessInstanceApi processInstanceApi;
 
 
     @Override
     public Long createReparationPart(Long userId, ReparationPartCreateReqVO createReqVO) {
-          createReqVO.setUserId(userId);
-          Long total = createReqVO.getTotalPrice();
-          Long reparationId = reparationService.create(createReqVO);
-         
-          List<PartDO> partDOList = PartConvert.INSTANCE.convertList3(createReqVO.getParts());
+        // 插入 OA 请假单
+        createReqVO.setUserId(userId);
+        Long total = createReqVO.getTotalPrice();
+        Long endusageDeptManagerId = createReqVO.getEndusageDeptManagerId();
+        Long reparationId = reparationService.createReparation(createReqVO);
+        List<PartDO> partDOList = PartConvert.INSTANCE.convertList3(createReqVO.getParts());
+        partDOList.forEach(partDO -> {
+            partDO.setReparationId(reparationId);
+            partDO.setCreator(String.valueOf(userId));
+        });
+        partMapper.insertBatch(partDOList);
+        List<FaultinfoDO> faultinfoDOList = FaultinfoConvert.INSTANCE.convertList03(createReqVO.getFaults());
+        faultinfoDOList.forEach(faultinfoDO -> {
+            faultinfoDO.setReparationId(reparationId);
+            faultinfoDO.setCreator(String.valueOf(userId));
+        });
+        faultinfoMapper.insertBatch(faultinfoDOList);
+        // 发起 BPM 流程
+        Map<String, Object> processInstanceVariables = new HashMap<>();
+        processInstanceVariables.put("path", 1);
+        processInstanceVariables.put("total", total);
+        processInstanceVariables.put("endusage_dept_manager_id", endusageDeptManagerId);
+        String processInstanceId = processInstanceApi.createProcessInstance(userId,
+                new BpmProcessInstanceCreateReqDTO().setProcessDefinitionKey(PROCESS_KEY)
+                        .setVariables(processInstanceVariables).setBusinessKey(String.valueOf(reparationId)));
 
-
-          partDOList.forEach(partDO -> {
-                partDO.setReparationId(reparationId);
-                partDO.setUserId(userId);
-                
-          });
-          
-
-// 插入 OA 请假单
-//        long day = LocalDateTimeUtil.between(createReqVO.getStartTime(), createReqVO.getEndTime()).toDays();
-//        BpmOALeaveDO leave = BpmOALeaveConvert.INSTANCE.convert(createReqVO).setUserId(userId).setDay(day)
-//                .setResult(BpmProcessInstanceResultEnum.PROCESS.getResult());
-//        leaveMapper.insert(leave);
-//
-//        // 发起 BPM 流程
-//        Map<String, Object> processInstanceVariables = new HashMap<>();
-//        processInstanceVariables.put("day", day);
-//        processInstanceVariables.put("path", 1);
-//        processInstanceVariables.put("total", 10000);
-//        processInstanceVariables.put("endusage_dept_manager_id", 133L);
-//        String processInstanceId = processInstanceApi.createProcessInstance(userId,
-//                new BpmProcessInstanceCreateReqDTO().setProcessDefinitionKey(PROCESS_KEY)
-//                        .setVariables(processInstanceVariables).setBusinessKey(String.valueOf(leave.getId())));
-//
-//        // 将工作流的编号，更新到 OA 请假单中
-//        leaveMapper.updateById(new BpmOALeaveDO().setId(leave.getId()).setProcessInstanceId(processInstanceId));
-//        return leave.getId();
-        return null;
+        // 将工作流的编号，更新到 OA 请假单中
+        reparationMapper.updateById(new ReparationDO().setId(reparationId).setProcessInstanceId(processInstanceId));
+        partDOList.forEach(partDO -> {
+            partDO.setProcessInstanceId(processInstanceId);
+        });
+        faultinfoDOList.forEach(faultinfoDO -> {
+            faultinfoDO.setProcessInstanceId(processInstanceId);
+        });
+        partMapper.updateBatch(partDOList,partDOList.size());
+        faultinfoMapper.updateBatch(faultinfoDOList,faultinfoDOList.size());
+        return reparationId;
     }
 
     @Override
@@ -124,12 +140,23 @@ public class ReparationPartServiceImpl implements ReparationPartService {
     public ReparationPartRespVO getReparationPart(Long id) {
         ReparationDO reparation = reparationService.getReparation(id);
         ReparationRespVO reparationRespVO = ReparationConvert.INSTANCE.convert(reparation);
-        PartPageReqVO pageReqVO = new PartPageReqVO().setReparationId(reparation.getId());
-        pageReqVO.setPageNo(1).setPageSize(10000);
-        PageResult<PartDO> partPage = partService.getPartPage(pageReqVO);
-        List<PartRespVO> partRespVOS = PartConvert.INSTANCE.convertList(partPage.getList());
         ReparationPartRespVO reparationPartRespVO = ReparationConvert.INSTANCE.convert2(reparationRespVO);
+
+        PartPageReqVO partPageReqVO = new PartPageReqVO().setReparationId(reparation.getId());
+        partPageReqVO.setPageNo(1).setPageSize(10000);
+        PageResult<PartDO> partPage = partService.getPartPage(partPageReqVO);
+        List<PartRespVO> partRespVOS = PartConvert.INSTANCE.convertList(partPage.getList());
         reparationPartRespVO.setParts(partRespVOS);
+
+        FaultinfoPageReqVO faultinfoPageReqVO = new FaultinfoPageReqVO().setReparationId(reparation.getId());
+        faultinfoPageReqVO.setPageNo(1).setPageSize(10000);
+        PageResult<FaultinfoDO> faultinfoPage = faultinfoService.getFaultinfoPage(faultinfoPageReqVO);
+        List<FaultinfoRespVO> faultinfoRespVOList = FaultinfoConvert.INSTANCE.convertList(faultinfoPage.getList());
+        reparationPartRespVO.setFaults(faultinfoRespVOList);
+
+        List<FaultinfoDO> reparaion_id = faultinfoMapper.selectList("reparation_id", String.valueOf(35));
+
+
 
         return reparationPartRespVO;
     }
