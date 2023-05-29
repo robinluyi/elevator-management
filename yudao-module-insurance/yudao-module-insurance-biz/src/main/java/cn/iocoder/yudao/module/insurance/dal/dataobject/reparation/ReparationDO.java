@@ -90,4 +90,9 @@ public class ReparationDO extends BaseDO {
      * 考虑到简单，所以直接复用了 BpmProcessInstanceResultEnum 枚举，也可以自己定义一个枚举哈
      */
     private Integer result;
+    /**
+     * 用于流程相关的标记 使用逗号分割,例如:
+     * "showEndUserPic,editEndUserPic,editForm" 等
+     */
+    private String marks;
 }

@@ -10,17 +10,14 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
-import cn.iocoder.yudao.module.bpm.api.task.BpmProcessInstanceApi;
-import cn.iocoder.yudao.module.bpm.api.task.dto.BpmProcessInstanceCreateReqDTO;
-import cn.iocoder.yudao.module.insurance.controller.admin.faultinfo.vo.FaultinfoPageReqVO;
-import cn.iocoder.yudao.module.insurance.controller.admin.faultinfo.vo.FaultinfoRespVO;
-import cn.iocoder.yudao.module.insurance.convert.faultinfo.FaultinfoConvert;
-import cn.iocoder.yudao.module.insurance.dal.dataobject.faultinfo.FaultinfoDO;
-import cn.iocoder.yudao.module.insurance.service.faultinfo.FaultinfoService;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
 import cn.iocoder.yudao.framework.common.pojo.PageResult;
+import cn.iocoder.yudao.module.bpm.api.task.BpmProcessInstanceApi;
+import cn.iocoder.yudao.module.bpm.api.task.dto.BpmProcessInstanceCreateReqDTO;
+import cn.iocoder.yudao.module.insurance.controller.admin.faultinfo.vo.FaultinfoPageReqVO;
+import cn.iocoder.yudao.module.insurance.controller.admin.faultinfo.vo.FaultinfoRespVO;
 import cn.iocoder.yudao.module.insurance.controller.admin.part.vo.PartPageReqVO;
 import cn.iocoder.yudao.module.insurance.controller.admin.part.vo.PartRespVO;
 import cn.iocoder.yudao.module.insurance.controller.admin.reparation.vo.ReparationRespVO;
@@ -28,13 +25,16 @@ import cn.iocoder.yudao.module.insurance.controller.admin.reparationpart.vo.Repa
 import cn.iocoder.yudao.module.insurance.controller.admin.reparationpart.vo.ReparationPartPageReqVO;
 import cn.iocoder.yudao.module.insurance.controller.admin.reparationpart.vo.ReparationPartRespVO;
 import cn.iocoder.yudao.module.insurance.controller.admin.reparationpart.vo.ReparationPartUpdateReqVO;
+import cn.iocoder.yudao.module.insurance.convert.faultinfo.FaultinfoConvert;
 import cn.iocoder.yudao.module.insurance.convert.part.PartConvert;
 import cn.iocoder.yudao.module.insurance.convert.reparation.ReparationConvert;
+import cn.iocoder.yudao.module.insurance.dal.dataobject.faultinfo.FaultinfoDO;
 import cn.iocoder.yudao.module.insurance.dal.dataobject.part.PartDO;
 import cn.iocoder.yudao.module.insurance.dal.dataobject.reparation.ReparationDO;
 import cn.iocoder.yudao.module.insurance.dal.mysql.faultinfo.FaultinfoMapper;
 import cn.iocoder.yudao.module.insurance.dal.mysql.part.PartMapper;
 import cn.iocoder.yudao.module.insurance.dal.mysql.reparation.ReparationMapper;
+import cn.iocoder.yudao.module.insurance.service.faultinfo.FaultinfoService;
 import cn.iocoder.yudao.module.insurance.service.part.PartService;
 import cn.iocoder.yudao.module.insurance.service.reparation.ReparationService;
 
@@ -46,10 +46,7 @@ import cn.iocoder.yudao.module.insurance.service.reparation.ReparationService;
 @Service
 @Validated
 public class ReparationPartServiceImpl implements ReparationPartService {
-    /**
-     * OA 请假对应的流程定义 KEY
-     */
-    public static final String PROCESS_KEY = "Insurance_reporting_proc_test";
+
 
     @Resource
     private ReparationMapper reparationMapper;
@@ -174,6 +171,11 @@ public class ReparationPartServiceImpl implements ReparationPartService {
         return null;
     }
 
+    @Override
+    public void updateReparationPart(Long id, Integer result) {
+        validateReparationPartExists(id);
+        reparationMapper.updateById(new ReparationDO().setId(id).setResult(result));
+    }
 
 
 }

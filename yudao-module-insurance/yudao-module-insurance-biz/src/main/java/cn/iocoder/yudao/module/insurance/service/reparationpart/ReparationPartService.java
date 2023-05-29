@@ -1,15 +1,15 @@
 package cn.iocoder.yudao.module.insurance.service.reparationpart;
 
+import java.util.Collection;
+import java.util.List;
+
+import javax.validation.Valid;
+
 import cn.iocoder.yudao.framework.common.pojo.PageResult;
 import cn.iocoder.yudao.module.insurance.controller.admin.reparationpart.vo.ReparationPartCreateReqVO;
 import cn.iocoder.yudao.module.insurance.controller.admin.reparationpart.vo.ReparationPartPageReqVO;
 import cn.iocoder.yudao.module.insurance.controller.admin.reparationpart.vo.ReparationPartRespVO;
 import cn.iocoder.yudao.module.insurance.controller.admin.reparationpart.vo.ReparationPartUpdateReqVO;
-
-
-import javax.validation.Valid;
-import java.util.Collection;
-import java.util.List;
 
 /**
  * 电梯报修申请 Service 接口
@@ -17,7 +17,10 @@ import java.util.List;
  * @author 德尔开发
  */
 public interface ReparationPartService {
-
+    /**
+     * OA 请假对应的流程定义 KEY
+     */
+    public final String PROCESS_KEY = "Insurance_reporting_proc_test";
     /**
      * 创建电梯报修申请
      *
@@ -65,4 +68,5 @@ public interface ReparationPartService {
     PageResult<ReparationPartRespVO> getReparationPartPage(Long id,ReparationPartPageReqVO pageReqVO);
 
 
+    void updateReparationPart(Long id, Integer result);
 }

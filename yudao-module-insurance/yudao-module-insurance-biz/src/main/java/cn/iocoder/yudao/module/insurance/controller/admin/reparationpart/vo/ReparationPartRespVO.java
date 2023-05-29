@@ -27,4 +27,9 @@ public class ReparationPartRespVO extends ReparationRespVO {
     public List<PartRespVO> parts;
     @Schema(description = "故障列表", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     public List<FaultinfoRespVO> faults;
+    /**
+     * 用于流程相关的标记 使用逗号分割,例如:
+     * "showEndUserPic,editEndUserPic,editForm" 等
+     */
+    public String marks;
 }
