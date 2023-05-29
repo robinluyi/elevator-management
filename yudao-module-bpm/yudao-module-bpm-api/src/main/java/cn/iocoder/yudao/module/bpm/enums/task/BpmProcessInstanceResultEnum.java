@@ -24,17 +24,21 @@ public enum BpmProcessInstanceResultEnum {
 
     BACK(5, "退回/驳回"),
 
-    // ========== 保险流程状态
+    // ========== 保险流程状态  N < 0 需要发起人修改
+    REFILL(-1,"待补充"),
 
-    SAVED(11,"已保存"),
-    SUBMITTED(12, "已报案"),
-    ACCEPTED(13,"已受理"),
-    REFILL(14,"待补充"),
-    TO_REVIEW(15,"待审核"),
-    REVIEWED(16,"已审核"),
-    TO_CONFIRM(17,"待确认"),
-    CONFIRMMED(18,"已确认"),
+    // ========== 保险流程状态   100 < N < 200  表单不可修改
+    SAVED(101,"已保存"),
+    SUBMITTED(102, "已报案"),
+    ACCEPTED(103,"已受理"),
+    TO_REVIEW(103,"待审核"),
+    REVIEWED(105,"已审核"),
+    TO_CONFIRM(106,"待确认"),
+    CONFIRMMED(107,"已确认"),
 
+    // ========== 保险流程状态   200 < N < 300  待特定人群确认
+    TO_REPAIRED_CONFIRM(201,"待维修确认"),
+    TO_REPAIRED_CONFIRM(202,"待物业确认"),
     ;
     /**
      * 结果
