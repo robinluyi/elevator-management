@@ -31,7 +31,7 @@ public enum BpmProcessInstanceResultEnum {
     SAVED(101,"已保存"),
     SUBMITTED(102, "已报案"),
     ACCEPTED(103,"已受理"),
-    TO_REVIEW(103,"待审核"),
+    TO_REVIEW(104,"待审核"),
     REVIEWED(105,"已审核"),
     TO_CONFIRM(106,"待确认"),
     CONFIRMED(107,"已确认"),

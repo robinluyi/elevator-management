@@ -93,5 +93,12 @@ public class InsuranceOrderDO extends BaseDO {
      * 是否装配配件
      */
     private Byte hasPart;
+    /**
+     * 申请的结果
+     *
+     * 枚举 {@link BpmProcessInstanceResultEnum}
+     * 考虑到简单，所以直接复用了 BpmProcessInstanceResultEnum 枚举，也可以自己定义一个枚举哈
+     */
+    private Integer result;
 
 }
