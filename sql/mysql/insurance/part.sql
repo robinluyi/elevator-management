@@ -12,6 +12,7 @@ CREATE TABLE `insurance_part`  (
   `part_quantity` decimal NOT NULL default 0  COMMENT '数量',
   `part_total` decimal NOT NULL default 0  COMMENT '小计',
   -- 业务字段结束.
+  `result` tinyint NOT NULL COMMENT '流程状态',
   `process_instance_id` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '流程实例的编号',
   `creator` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT '' COMMENT '创建者',
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
