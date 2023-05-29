@@ -130,13 +130,22 @@ public class BpmTaskServiceImpl implements BpmTaskService {
 
         String processDefinitionId = task.getProcessDefinitionId();
         String taskDefinitionKey = task.getTaskDefinitionKey();
-        return getExtAttrMap(processDefinitionId, taskDefinitionKey);
+        return getExtAttribute(processDefinitionId, taskDefinitionKey);
     }
-
-    private Map<String, String> getExtAttrMap(String processDefinitionId, String taskDefinitionKey) {
-        Map<String, String> extAttr = new HashMap<>();
+    @Override
+    public Map<String, String> getExtAttribute(String processDefinitionId, String taskDefinitionKey) {
         BpmnModel bpmnModel = repositoryService.getBpmnModel(processDefinitionId);
         FlowElement flowElement = bpmnModel.getMainProcess().getFlowElement(taskDefinitionKey);
+        return getExtAttribute(flowElement);
+    }
+    @Override
+    public Map<String, String> getExtAttribute(DelegateExecution execution) {
+        FlowElement flowElement = execution.getCurrentFlowElement();
+        return getExtAttribute(flowElement);
+    }
+    @Override
+    public Map<String, String> getExtAttribute(FlowElement flowElement) {
+        Map<String, String> extAttr = new HashMap<>();
         if (flowElement == null) {
             return Collections.emptyMap();
         }
