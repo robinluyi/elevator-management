@@ -102,4 +102,12 @@ public interface DeptService {
      */
     void validateDeptList(Collection<Long> ids);
 
+    /**
+     * 获得所有电梯使用单位信息
+     */
+    List<DeptDO> getEndusageDeptList();
+    /**
+     * 获得所有电梯维保单位信息
+     */
+    List<DeptDO> getMaintainDeptList();
 }

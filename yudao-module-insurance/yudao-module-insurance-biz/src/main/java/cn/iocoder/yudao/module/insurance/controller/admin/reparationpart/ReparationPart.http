@@ -5,3 +5,20 @@ tenant-id: 1
 Authorization: Bearer {{token}}
 
 
+### 请求 /system/dept/list/endusage 接口 => 成功
+GET {{baseUrl}}/system/dept/list/endusage
+Content-Type: application/json
+tenant-id: 1
+Authorization: Bearer {{token}}
+
+### 请求 /system/dept/list/endusage 接口 => 成功
+GET {{baseUrl}}/system/dept/list/maintain
+Content-Type: application/json
+tenant-id: 1
+Authorization: Bearer {{token}}
+
+### 请求 /system/user/get?id= 接口 => 成功
+GET {{baseUrl}}/system/user/get?id=133
+Content-Type: application/json
+tenant-id: 1
+Authorization: Bearer {{token}}

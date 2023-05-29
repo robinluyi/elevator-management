@@ -1,24 +1,39 @@
 package cn.iocoder.yudao.module.system.controller.admin.dept;
 
-import cn.iocoder.yudao.framework.common.enums.CommonStatusEnum;
-import cn.iocoder.yudao.framework.common.pojo.CommonResult;
-import cn.iocoder.yudao.module.system.controller.admin.dept.vo.dept.*;
-import cn.iocoder.yudao.module.system.convert.dept.DeptConvert;
-import cn.iocoder.yudao.module.system.dal.dataobject.dept.DeptDO;
-import cn.iocoder.yudao.module.system.service.dept.DeptService;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.Operation;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import static cn.iocoder.yudao.framework.common.pojo.CommonResult.success;
 
-import javax.annotation.Resource;
-import javax.validation.Valid;
 import java.util.Comparator;
 import java.util.List;
 
-import static cn.iocoder.yudao.framework.common.pojo.CommonResult.success;
+import javax.annotation.Resource;
+import javax.validation.Valid;
+
+import cn.iocoder.yudao.framework.security.core.annotations.PreAuthenticated;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import cn.iocoder.yudao.framework.common.enums.CommonStatusEnum;
+import cn.iocoder.yudao.framework.common.pojo.CommonResult;
+import cn.iocoder.yudao.module.system.controller.admin.dept.vo.dept.DeptCreateReqVO;
+import cn.iocoder.yudao.module.system.controller.admin.dept.vo.dept.DeptListReqVO;
+import cn.iocoder.yudao.module.system.controller.admin.dept.vo.dept.DeptRespVO;
+import cn.iocoder.yudao.module.system.controller.admin.dept.vo.dept.DeptSimpleRespVO;
+import cn.iocoder.yudao.module.system.controller.admin.dept.vo.dept.DeptUpdateReqVO;
+import cn.iocoder.yudao.module.system.convert.dept.DeptConvert;
+import cn.iocoder.yudao.module.system.dal.dataobject.dept.DeptDO;
+import cn.iocoder.yudao.module.system.service.dept.DeptService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 @Tag(name = "管理后台 - 部门")
 @RestController
@@ -83,4 +98,20 @@ public class DeptController {
         return success(DeptConvert.INSTANCE.convert(deptService.getDept(id)));
     }
 
+    @GetMapping("/list/endusage")
+    @Operation(summary = "获取电梯使用单位列表")
+    @PreAuthenticated
+    public CommonResult<List<DeptRespVO>> getEndusageDeptList() {
+        List<DeptDO> list = deptService.getEndusageDeptList();
+        list.sort(Comparator.comparing(DeptDO::getSort));
+        return success(DeptConvert.INSTANCE.convertList(list));
+    }
+    @GetMapping("/list/maintain")
+    @Operation(summary = "获取电梯维护公司列表")
+    @PreAuthenticated
+    public CommonResult<List<DeptRespVO>> getMaintainDeptList() {
+        List<DeptDO> list = deptService.getMaintainDeptList();
+        list.sort(Comparator.comparing(DeptDO::getSort));
+        return success(DeptConvert.INSTANCE.convertList(list));
+    }
 }

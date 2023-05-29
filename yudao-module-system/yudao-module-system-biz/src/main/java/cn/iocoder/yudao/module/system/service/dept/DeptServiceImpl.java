@@ -264,4 +264,23 @@ public class DeptServiceImpl implements DeptService {
         });
     }
 
+
+    @Override
+    public List<DeptDO> getEndusageDeptList() {
+        return getDeptListByParentName("物业公司");
+    }
+
+    @Override
+    public List<DeptDO> getMaintainDeptList() {
+        return getDeptListByParentName("电梯维保公司");
+    }
+
+    private  List<DeptDO> getDeptListByParentName(String deptName) {
+        DeptDO parent = deptMapper.selectOne("name", deptName);
+        if (parent == null) {
+            return Collections.emptyList();
+        }
+        return deptMapper.selectList("parent_id", parent.getId());
+    }
+
 }
