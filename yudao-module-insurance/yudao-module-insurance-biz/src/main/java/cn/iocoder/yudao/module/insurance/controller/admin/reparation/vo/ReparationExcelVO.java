@@ -63,5 +63,6 @@ public class ReparationExcelVO {
 
     @ExcelProperty("配件总价格")
     private Long totalPrice;
-
+    @Schema(description = "状态-参见 bpm_process_instance_result 枚举", example = "1")
+    private Integer result;
 }

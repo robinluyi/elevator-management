@@ -15,4 +15,6 @@ public class ReparationUpdateReqVO extends ReparationBaseVO {
     @NotNull(message = "维修表单主键不能为空")
     private Long id;
 
+    @Schema(description = "状态-参见 bpm_process_instance_result 枚举", example = "1")
+    private Integer result;
 }

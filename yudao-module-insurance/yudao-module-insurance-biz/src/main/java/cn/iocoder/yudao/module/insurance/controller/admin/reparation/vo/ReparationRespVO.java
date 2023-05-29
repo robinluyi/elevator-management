@@ -15,5 +15,6 @@ public class ReparationRespVO extends ReparationBaseVO {
 
     @Schema(description = "创建时间", requiredMode = Schema.RequiredMode.REQUIRED)
     private LocalDateTime createTime;
-
+    @Schema(description = "状态-参见 bpm_process_instance_result 枚举", example = "1")
+    private Integer result;
 }

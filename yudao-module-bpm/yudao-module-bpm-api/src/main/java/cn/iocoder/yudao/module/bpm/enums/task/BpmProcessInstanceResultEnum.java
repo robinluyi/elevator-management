@@ -34,11 +34,11 @@ public enum BpmProcessInstanceResultEnum {
     TO_REVIEW(103,"待审核"),
     REVIEWED(105,"已审核"),
     TO_CONFIRM(106,"待确认"),
-    CONFIRMMED(107,"已确认"),
+    CONFIRMED(107,"已确认"),
 
     // ========== 保险流程状态   200 < N < 300  待特定人群确认
     TO_REPAIRED_CONFIRM(201,"待维修确认"),
-    TO_REPAIRED_CONFIRM(202,"待物业确认"),
+    TO_USAGE_CONFIRM(202,"待物业确认"),
     ;
     /**
      * 结果

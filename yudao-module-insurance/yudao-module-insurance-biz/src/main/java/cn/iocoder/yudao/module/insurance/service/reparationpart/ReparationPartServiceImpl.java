@@ -78,6 +78,7 @@ public class ReparationPartServiceImpl implements ReparationPartService {
         createReqVO.setUserId(userId);
         Long total = createReqVO.getTotalPrice();
         Long endusageDeptManagerId = createReqVO.getEndusageDeptManagerId();
+
         Long reparationId = reparationService.createReparation(createReqVO);
         List<PartDO> partDOList = PartConvert.INSTANCE.convertList3(createReqVO.getParts());
         partDOList.forEach(partDO -> {

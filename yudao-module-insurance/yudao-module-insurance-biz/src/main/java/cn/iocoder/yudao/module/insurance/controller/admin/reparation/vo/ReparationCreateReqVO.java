@@ -10,5 +10,6 @@ import javax.validation.constraints.*;
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 public class ReparationCreateReqVO extends ReparationBaseVO {
-
+    @Schema(description = "状态-参见 bpm_process_instance_result 枚举", example = "1")
+    private Integer result;
 }
