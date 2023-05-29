@@ -136,4 +136,17 @@ public interface BpmTaskService {
      */
     Map<String, String> getExtAttribute(Task task);
 
+    /**
+     * 获得任务扩展属性
+     */
+    Map<String, String> getExtAttribute(String processDefinitionId, String taskDefinitionKey);
+    /**
+     * 获得任务扩展属性
+     */
+    Map<String, String> getExtAttribute(FlowElement flowElement);
+    /**
+     * 获得任务扩展属性
+     */ 
+    Map<String, String> getExtAttribute(DelegateExecution execution);
+
 }

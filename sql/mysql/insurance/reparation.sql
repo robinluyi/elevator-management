@@ -20,6 +20,7 @@ CREATE TABLE `insurance_reparation`  (
   `total_price` decimal DEFAULT 0 COMMENT '配件总价格',
   
   -- 业务字段结束.
+  `marks` varchar(1000) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Mark',
   `result` tinyint NOT NULL COMMENT '流程状态',
   `process_instance_id` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '流程实例的编号',
   `creator` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT '' COMMENT '创建者',

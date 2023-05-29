@@ -5,6 +5,7 @@ import cn.iocoder.yudao.framework.common.util.number.NumberUtils;
 import cn.iocoder.yudao.module.bpm.enums.definition.BpmTaskRuleScriptEnum;
 import cn.iocoder.yudao.module.bpm.framework.flowable.core.behavior.script.BpmTaskAssignScript;
 import cn.iocoder.yudao.module.bpm.service.task.BpmProcessInstanceService;
+import cn.iocoder.yudao.module.bpm.service.task.BpmTaskService;
 import org.flowable.bpmn.model.BpmnModel;
 import org.flowable.bpmn.model.ExtensionAttribute;
 import org.flowable.bpmn.model.ExtensionElement;
@@ -31,11 +32,14 @@ public class BpmTaskAssignByExtAttrScript implements BpmTaskAssignScript {
     @Resource
     @Lazy // 解决循环依赖
     private BpmProcessInstanceService bpmProcessInstanceService;
+    @Resource
+    @Lazy // 解决循环依赖
+    BpmTaskService bpmTaskService;
 
     @Override
     public Set<Long> calculateTaskCandidateUsers(DelegateExecution execution) {
         ProcessInstance processInstance = bpmProcessInstanceService.getProcessInstance(execution.getProcessInstanceId());
-        Map<String, String> extAttrMap = getExtAttrMap(execution);
+        Map<String, String> extAttrMap = bpmTaskService.getExtAttribute(execution);
         String key = extAttrMap.get(ASSIGEN_EXT_VAR_KEY);
         Long assignee = (Long) processInstance.getProcessVariables().get(key);
         return SetUtils.asSet(assignee);
@@ -44,33 +48,6 @@ public class BpmTaskAssignByExtAttrScript implements BpmTaskAssignScript {
     @Override
     public BpmTaskRuleScriptEnum getEnum() {
         return BpmTaskRuleScriptEnum.ASSIGEN_EXT_VAR_KEY;
-    }
-
-    private Map<String, String> getExtAttrMap(DelegateExecution execution) {
-        Map<String, String> extAttr = new HashMap<>();
-        FlowElement flowElement = execution.getCurrentFlowElement();
-        if (flowElement == null) {
-            return Collections.emptyMap();
-        }
-        Map<String, List<ExtensionElement>> extensionElements = flowElement.getExtensionElements();
-        if (extensionElements == null) {
-            return Collections.emptyMap();
-        }
-        extensionElements.forEach((key,list)-> {
-            list.forEach(element ->{
-                Map<String, List<ExtensionElement>> childElements = element.getChildElements();
-                if (childElements != null) {
-                    List<ExtensionElement> property = childElements.get("property");
-                    for (int i = 0; i < property.size(); i++) {
-                        Map<String, List<ExtensionAttribute>> attributes = property.get(i).getAttributes();
-                        String name = attributes.get("name").get(0).getValue();
-                        String value = attributes.get("value").get(0).getValue();
-                        extAttr.put(name,value);
-                    }
-                }
-            });
-        });
-        return extAttr;
     }
 
 }
