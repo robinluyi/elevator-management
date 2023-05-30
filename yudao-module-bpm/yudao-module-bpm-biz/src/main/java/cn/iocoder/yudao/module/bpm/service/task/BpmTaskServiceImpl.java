@@ -25,6 +25,7 @@ import org.flowable.bpmn.model.FlowElement;
 import org.flowable.engine.HistoryService;
 import org.flowable.engine.RepositoryService;
 import org.flowable.engine.TaskService;
+import org.flowable.engine.delegate.DelegateExecution;
 import org.flowable.engine.history.HistoricProcessInstance;
 import org.flowable.engine.runtime.ProcessInstance;
 import org.flowable.task.api.Task;
@@ -228,7 +229,7 @@ public class BpmTaskServiceImpl implements BpmTaskService {
         }
         Map<String, Map<String, String>> tasksExtAttrMap = new HashMap<>();
         tasks.forEach(task -> {
-            Map<String, String> extAttrMap = getExtAttrMap(task.getProcessDefinitionId(), task.getTaskDefinitionKey());
+            Map<String, String> extAttrMap = getExtAttribute(task.getProcessDefinitionId(), task.getTaskDefinitionKey());
             tasksExtAttrMap.put(task.getId(), extAttrMap);
         });
         // 获得 TaskExtDO Map

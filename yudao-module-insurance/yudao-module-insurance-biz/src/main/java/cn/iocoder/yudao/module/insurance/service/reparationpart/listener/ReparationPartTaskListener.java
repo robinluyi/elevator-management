@@ -10,18 +10,18 @@ import cn.iocoder.yudao.module.insurance.service.reparationpart.ReparationPartSe
 import com.google.common.collect.ImmutableSet;
 import org.flowable.common.engine.api.delegate.event.FlowableEngineEntityEvent;
 import org.flowable.common.engine.api.delegate.event.FlowableEngineEventType;
+import org.flowable.common.engine.impl.event.FlowableEntityEventImpl;
 import org.flowable.engine.delegate.event.AbstractFlowableEngineEventListener;
 import org.flowable.engine.delegate.event.impl.FlowableEntityWithVariablesEventImpl;
-import org.flowable.engine.impl.persistence.entity.ExecutionEntityImpl;
 import org.flowable.engine.repository.ProcessDefinition;
 import org.flowable.engine.runtime.ProcessInstance;
 import org.flowable.task.service.impl.persistence.entity.TaskEntityImpl;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
+import javax.validation.constraints.NotNull;
 import java.util.Map;
 import java.util.Set;
 
@@ -82,15 +82,17 @@ public class ReparationPartTaskListener extends AbstractFlowableEngineEventListe
     }
 
     private void setMarkToBizTableOnComplated(@NotNull FlowableEngineEntityEvent event) {
-        Map variables = bpmTaskService.getExtAttribute();
-        String marks = (String) variables.get(TaskMonitorFieldConstants.FIELD_MARKS_ON_CREATED);
+        String taskDefinitionKey = ((TaskEntityImpl) ((FlowableEntityWithVariablesEventImpl) event).getEntity()).getTaskDefinitionKey();
+        Map variables = bpmTaskService.getExtAttribute(event.getProcessDefinitionId(),taskDefinitionKey);
+        String marks = (String) variables.get(TaskMonitorFieldConstants.FIELD_MARKS_ON_COMPLETED);
         marks = StringUtils.hasText(marks)? marks:"";
         ProcessInstance processInstance = processInstanceService.getProcessInstance( event.getProcessInstanceId());
         reparationMapper.updateById(new ReparationDO().setId( Long.parseLong(processInstance.getBusinessKey())).setMarks(marks));
     }
     private void setMarkToBizTableOnCreate(@NotNull FlowableEngineEntityEvent event) {
-        Map variables = ((FlowableEntityWithVariablesEventImpl) event).getVariables();
-        String marks = (String) variables.get(TaskMonitorFieldConstants.FIELD_MARKS_ON_DELETED);
+        String taskDefinitionKey = ((TaskEntityImpl) ((FlowableEntityEventImpl) event).getEntity()).getTaskDefinitionKey();
+        Map variables = bpmTaskService.getExtAttribute(event.getProcessDefinitionId(),taskDefinitionKey);
+        String marks = (String) variables.get(TaskMonitorFieldConstants.FIELD_MARKS_ON_CREATED);
         marks = StringUtils.hasText(marks)? marks:"";
         ProcessInstance processInstance = processInstanceService.getProcessInstance( event.getProcessInstanceId());
         reparationMapper.updateById(new ReparationDO().setId( Long.parseLong(processInstance.getBusinessKey())).setMarks(marks));

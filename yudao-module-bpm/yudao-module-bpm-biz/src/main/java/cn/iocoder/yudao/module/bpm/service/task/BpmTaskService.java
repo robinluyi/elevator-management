@@ -5,6 +5,8 @@ import cn.iocoder.yudao.framework.common.pojo.PageResult;
 import cn.iocoder.yudao.framework.common.util.collection.CollectionUtils;
 import cn.iocoder.yudao.module.bpm.controller.admin.task.vo.task.*;
 import io.swagger.v3.oas.annotations.media.Schema;
+import org.flowable.bpmn.model.FlowElement;
+import org.flowable.engine.delegate.DelegateExecution;
 import org.flowable.task.api.Task;
 
 import javax.validation.Valid;
