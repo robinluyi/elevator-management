@@ -3,13 +3,21 @@ package cn.iocoder.yudao.module.insurance.service.reparationpart;
 import static cn.iocoder.yudao.framework.common.exception.util.ServiceExceptionUtil.exception;
 import static cn.iocoder.yudao.module.insurance.enums.ErrorCodeConstants.REPARATION_NOT_EXISTS;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 
+import cn.iocoder.yudao.module.bpm.controller.admin.task.vo.task.BpmTaskApproveReqVO;
+import cn.iocoder.yudao.module.bpm.controller.admin.task.vo.task.BpmTaskRespVO;
+import cn.iocoder.yudao.module.bpm.controller.admin.task.vo.task.BpmTaskTodoPageItemRespVO;
+import cn.iocoder.yudao.module.bpm.controller.admin.task.vo.task.BpmTaskTodoPageReqVO;
+import cn.iocoder.yudao.module.bpm.service.task.BpmTaskService;
+import cn.iocoder.yudao.module.insurance.controller.admin.part.vo.PartExportReqVO;
+import cn.iocoder.yudao.module.insurance.controller.admin.part.vo.PartUpdateReqVO;
+import cn.iocoder.yudao.module.system.api.dept.DeptApi;
+import cn.iocoder.yudao.module.system.api.user.AdminUserApi;
+import cn.iocoder.yudao.module.system.api.user.dto.AdminUserRespDTO;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
@@ -67,7 +75,13 @@ public class ReparationPartServiceImpl implements ReparationPartService {
     private PartService partService;
     @Resource
     private BpmProcessInstanceApi processInstanceApi;
+    @Resource
+    private DeptApi deptApi;
 
+    @Resource
+    private AdminUserApi adminUserApi;
+    @Resource
+    private BpmTaskService bpmTaskService;
 
     @Override
     public Long createReparationPart(Long userId, ReparationPartCreateReqVO createReqVO) {
@@ -112,15 +126,107 @@ public class ReparationPartServiceImpl implements ReparationPartService {
     }
 
     @Override
-    public void updateReparationPart(ReparationPartUpdateReqVO updateReqVO) {
-        // 校验存在
-//        validateReparationExists(updateReqVO.getId());
-//        // 更新
-//        ReparationDO updateObj = ReparationConvert.INSTANCE.convert(updateReqVO);
-//        reparationMapper.updateById(updateObj);
+    public Long updateReparationPart(Long loginUserId,ReparationPartUpdateReqVO updateReqVO) {
+        String taskName = UPDATE_FORM_TASK_NAME;
+        return updateReparationPartOnStep(loginUserId, updateReqVO,taskName);
+    }
+    @Override
+    public Long submitUpdatedReparationPart(Long loginUserId, ReparationPartUpdateReqVO updateReqVO) {
+        String taskName = UPDATE_FORM_TASK_NAME;
+        return submitReparationPartOnStep(loginUserId, updateReqVO, taskName);
+    }
+    @Override
+    public Long endusageConfirmReparationPart(Long loginUserId,ReparationPartUpdateReqVO updateReqVO) {
+        String taskName = ENDUSAGE_CONFIRM_FORM_TASK_NAME;
+        return updateReparationPartOnStep(loginUserId, updateReqVO,taskName);
     }
 
-   // @Override
+    @Override
+    public Long submitEndusageConfirmReparationPart(Long loginUserId, ReparationPartUpdateReqVO updateReqVO) {
+        String taskName = ENDUSAGE_CONFIRM_FORM_TASK_NAME;
+        return submitReparationPartOnStep(loginUserId, updateReqVO, taskName);
+    }
+    @Override
+    public Long postrepairConfirmReparationPart(Long loginUserId, ReparationPartUpdateReqVO updateReqVO) {
+        String taskName = POST_REPAIR_CONFIRM_TASK_NAME;
+        return updateReparationPartOnStep(loginUserId, updateReqVO,taskName);
+    }
+
+    @Override
+    public Long submitPostrepairReparationPart(Long loginUserId, ReparationPartUpdateReqVO updateReqVO) {
+        String taskName = POST_REPAIR_CONFIRM_TASK_NAME;
+        return submitReparationPartOnStep(loginUserId, updateReqVO, taskName);
+    }
+
+
+
+    private Long updateReparationPartOnStep(Long loginUserId, ReparationPartUpdateReqVO updateReqVO , String taskName) {
+        List<BpmTaskRespVO> taskRespVOList = bpmTaskService.getTaskListByProcessInstanceId(updateReqVO.getProcessInstanceId());
+        String taskId = taskRespVOList.stream()
+                .filter(vo -> taskName.equals(vo.getName()))
+                .map(vo -> vo.getId())
+                .findFirst().get();
+        bpmTaskService.checkTask(loginUserId, taskId);
+
+        Long reparationId = updateReqVO.getId();
+        validateReparationPartExists(reparationId);
+        ReparationDO updatedReparationDo = ReparationConvert.INSTANCE.convertUpdate(updateReqVO);
+        reparationMapper.updateById(updatedReparationDo);
+
+        // parts:
+        List<PartDO> existingPartDOS = partMapper.selectList(new PartExportReqVO().setReparationId(reparationId));
+        List<PartUpdateReqVO> partsReqVo = updateReqVO.getParts();
+        Set<Long> existingPartIDS = existingPartDOS.stream()
+                .map(PartDO::getId)
+                .collect(Collectors.toSet());
+        Set<Long> newPartIDs = partsReqVo.stream()
+                .filter(vo -> vo.getId() != 0)
+                .map(PartUpdateReqVO::getId)
+                .collect(Collectors.toSet());
+        //update part
+        partsReqVo.stream().filter(vo -> existingPartIDS.contains(vo.getId()))
+                .map(PartConvert.INSTANCE::convert)
+                .forEach(partMapper::updateById);
+        //insert new part
+        partsReqVo.stream().filter(vo -> !existingPartIDS.contains(vo.getId()))
+                .map(PartConvert.INSTANCE::convert)
+                .map(partDO -> {
+                    partDO.setId(null);
+                    partDO.setReparationId(reparationId);
+                    return partDO;
+                })
+                .forEach(partMapper::insert);
+        //delete removed part
+        existingPartIDS.stream().filter(id -> !newPartIDs.contains(id))
+                .forEach(partMapper::deleteById);
+
+        return reparationId;
+    }
+
+
+
+    private Long submitReparationPartOnStep(Long loginUserId, ReparationPartUpdateReqVO updateReqVO, String taskName) {
+        Long reparationId = updateReparationPart(loginUserId, updateReqVO);
+        BpmTaskApproveReqVO bpmTaskApproveReqVO = new BpmTaskApproveReqVO();
+        bpmTaskApproveReqVO.setId("taskId");//taskId;
+        List<BpmTaskRespVO> taskRespVOList = bpmTaskService.getTaskListByProcessInstanceId(updateReqVO.getProcessInstanceId());
+        String taskId = taskRespVOList.stream()
+                .filter(vo -> taskName.equals(vo.getName()))
+                .map(vo -> vo.getId())
+                .findFirst().get();
+        BpmTaskApproveReqVO taskApproveReq =new BpmTaskApproveReqVO() ;
+        taskApproveReq.setId(taskId);
+        taskApproveReq.setPath("1");
+        taskApproveReq.setReason("补充材料");
+        bpmTaskService.approveTask(loginUserId,taskApproveReq);
+        return reparationId;
+    }
+
+
+
+
+
+    // @Override
    // public void deleteReparation(Long id) {
 //        // 校验存在
 //        validateReparationExists(id);
@@ -129,7 +235,8 @@ public class ReparationPartServiceImpl implements ReparationPartService {
    // }
 
     private void validateReparationPartExists(Long id) {
-        if (reparationMapper.selectById(id) == null) {
+        ReparationDO reparationDO = reparationMapper.selectById(id);
+        if (reparationDO == null) {
             throw exception(REPARATION_NOT_EXISTS);
         }
     }
@@ -144,6 +251,7 @@ public class ReparationPartServiceImpl implements ReparationPartService {
         partPageReqVO.setPageNo(1).setPageSize(10000);
         PageResult<PartDO> partPage = partService.getPartPage(partPageReqVO);
         List<PartRespVO> partRespVOS = PartConvert.INSTANCE.convertList(partPage.getList());
+        partRespVOS.sort(Comparator.comparing(PartRespVO::getId));
         reparationPartRespVO.setParts(partRespVOS);
 
         FaultinfoPageReqVO faultinfoPageReqVO = new FaultinfoPageReqVO().setReparationId(reparation.getId());
@@ -151,6 +259,13 @@ public class ReparationPartServiceImpl implements ReparationPartService {
         PageResult<FaultinfoDO> faultinfoPage = faultinfoService.getFaultinfoPage(faultinfoPageReqVO);
         List<FaultinfoRespVO> faultinfoRespVOList = FaultinfoConvert.INSTANCE.convertList(faultinfoPage.getList());
         reparationPartRespVO.setFaults(faultinfoRespVOList);
+
+
+
+        reparationPartRespVO.setUserDeptName( deptApi.getDept(reparation.getUserDeptId()).getName());
+        AdminUserRespDTO endusageManager = adminUserApi.getUser(reparationPartRespVO.getEndusageDeptManagerId());
+        reparationPartRespVO.setEndusageDeptManagerName(endusageManager.getNickname());
+        reparationPartRespVO.setEndusageDeptManagerPhone(endusageManager.getMobile());
 
         List<FaultinfoDO> reparaion_id = faultinfoMapper.selectList("reparation_id", String.valueOf(35));
 
@@ -176,6 +291,8 @@ public class ReparationPartServiceImpl implements ReparationPartService {
         validateReparationPartExists(id);
         reparationMapper.updateById(new ReparationDO().setId(id).setResult(result));
     }
+
+
 
 
 }

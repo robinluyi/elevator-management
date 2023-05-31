@@ -21,6 +21,10 @@ public interface ReparationPartService {
      * OA 请假对应的流程定义 KEY
      */
     public final String PROCESS_KEY = "Insurance_reporting_proc_test";
+    public final String PROCESS_NAME = "保修测试";
+    public final String UPDATE_FORM_TASK_NAME = "补传信息";
+    public final String ENDUSAGE_CONFIRM_FORM_TASK_NAME = "物业确认";
+    public final String POST_REPAIR_CONFIRM_TASK_NAME = "提交维修后照片";
     /**
      * 创建电梯报修申请
      *
@@ -34,7 +38,7 @@ public interface ReparationPartService {
      *
      * @param updateReqVO 更新信息
      */
-    void updateReparationPart(@Valid ReparationPartUpdateReqVO updateReqVO);
+    Long updateReparationPart(Long id,@Valid ReparationPartUpdateReqVO updateReqVO);
 
     /**
      * 删除电梯报修申请
@@ -69,4 +73,12 @@ public interface ReparationPartService {
 
 
     void updateReparationPart(Long id, Integer result);
+
+    Long submitUpdatedReparationPart(Long loginUserId, ReparationPartUpdateReqVO updateReqVO);
+
+    Long endusageConfirmReparationPart(Long loginUserId,ReparationPartUpdateReqVO updateReqVO);
+    Long submitEndusageConfirmReparationPart(Long loginUserId, ReparationPartUpdateReqVO updateReqVO);
+    Long postrepairConfirmReparationPart(Long loginUserId,ReparationPartUpdateReqVO updateReqVO);
+    Long submitPostrepairReparationPart(Long loginUserId, ReparationPartUpdateReqVO updateReqVO);
+
 }

@@ -12,7 +12,7 @@ import javax.validation.constraints.*;
 public class ReparationUpdateReqVO extends ReparationBaseVO {
 
     @Schema(description = "维修表单主键", requiredMode = Schema.RequiredMode.REQUIRED)
-    @NotNull(message = "维修表单主键不能为空")
+    @NotNull(message = "维修表单主键不能为空1")
     private Long id;
 
     @Schema(description = "状态-参见 bpm_process_instance_result 枚举", example = "1")

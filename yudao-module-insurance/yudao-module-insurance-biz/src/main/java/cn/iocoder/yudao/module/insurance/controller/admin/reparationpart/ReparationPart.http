@@ -1,5 +1,5 @@
 ### 请求 /insurance/reparationpart/get 接口 => 成功
-GET {{baseUrl}}/insurance/reparationpart/get?id=35
+GET {{baseUrl}}/insurance/reparationpart/get?id=38
 Content-Type: application/json
 tenant-id: 1
 Authorization: Bearer {{token}}

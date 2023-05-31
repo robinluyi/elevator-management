@@ -17,4 +17,9 @@ public class ReparationRespVO extends ReparationBaseVO {
     private LocalDateTime createTime;
     @Schema(description = "状态-参见 bpm_process_instance_result 枚举", example = "1")
     private Integer result;
+    /**
+     * 用于流程相关的标记 使用逗号分割,例如:
+     * "showEndUserPic,editEndUserPic,editForm" 等
+     */
+    private String marks;
 }

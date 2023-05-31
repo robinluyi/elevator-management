@@ -32,4 +32,7 @@ public class ReparationPartRespVO extends ReparationRespVO {
      * "showEndUserPic,editEndUserPic,editForm" 等
      */
     public String marks;
+    public String userDeptName;
+    public String endusageDeptManagerName;
+    public String endusageDeptManagerPhone;
 }

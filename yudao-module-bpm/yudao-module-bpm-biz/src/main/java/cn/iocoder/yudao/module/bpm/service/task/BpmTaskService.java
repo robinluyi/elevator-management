@@ -150,5 +150,13 @@ public interface BpmTaskService {
      * 获得任务扩展属性
      */ 
     Map<String, String> getExtAttribute(DelegateExecution execution);
+    /**
+     * 校验任务是否存在， 并且是否是分配给自己的任务
+     *
+     * @param userId 用户 id
+     * @param taskId task id
+     */
+    Task checkTask(Long userId, String taskId);
+
 
 }

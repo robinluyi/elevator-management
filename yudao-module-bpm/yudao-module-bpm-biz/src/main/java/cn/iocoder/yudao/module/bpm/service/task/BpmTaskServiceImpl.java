@@ -309,7 +309,8 @@ public class BpmTaskServiceImpl implements BpmTaskService {
      * @param userId 用户 id
      * @param taskId task id
      */
-    private Task checkTask(Long userId, String taskId) {
+    @Override
+    public Task checkTask(Long userId, String taskId) {
         Task task = getTask(taskId);
         if (task == null) {
             throw exception(TASK_COMPLETE_FAIL_NOT_EXISTS);

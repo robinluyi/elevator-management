@@ -1,7 +1,9 @@
 package cn.iocoder.yudao.module.insurance.controller.admin.reparationpart.vo;
 
 import cn.iocoder.yudao.module.insurance.controller.admin.faultinfo.vo.FaultinfoCreateReqVO;
+import cn.iocoder.yudao.module.insurance.controller.admin.faultinfo.vo.FaultinfoUpdateReqVO;
 import cn.iocoder.yudao.module.insurance.controller.admin.part.vo.PartRespVO;
+import cn.iocoder.yudao.module.insurance.controller.admin.part.vo.PartUpdateReqVO;
 import cn.iocoder.yudao.module.insurance.controller.admin.reparation.vo.ReparationBaseVO;
 import cn.iocoder.yudao.module.insurance.controller.admin.reparation.vo.ReparationUpdateReqVO;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -18,12 +20,10 @@ import java.util.List;
 @ToString(callSuper = true)
 public class ReparationPartUpdateReqVO extends ReparationUpdateReqVO {
 
-    @Schema(description = "维修表单主键", requiredMode = Schema.RequiredMode.REQUIRED)
-    @NotNull(message = "维修表单主键不能为空")
-    private Long id;
+
     @Schema(description = "零件列表", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-    public List<PartRespVO> parts;
+    public List<PartUpdateReqVO> parts;
     @Schema(description = "故障列表", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-    public List<FaultinfoCreateReqVO> faults;
+    public List<FaultinfoUpdateReqVO> faults;
 
 }

@@ -6,6 +6,7 @@ import cn.iocoder.yudao.framework.common.pojo.PageResult;
 import cn.iocoder.yudao.module.insurance.controller.admin.reparationpart.vo.ReparationPartCreateReqVO;
 import cn.iocoder.yudao.module.insurance.controller.admin.reparationpart.vo.ReparationPartPageReqVO;
 import cn.iocoder.yudao.module.insurance.controller.admin.reparationpart.vo.ReparationPartRespVO;
+import cn.iocoder.yudao.module.insurance.controller.admin.reparationpart.vo.ReparationPartUpdateReqVO;
 import cn.iocoder.yudao.module.insurance.service.reparationpart.ReparationPartService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -33,7 +34,7 @@ public class ReparationPartController {
     @PostMapping("/create")
     @PreAuthorize("@ss.hasPermission('insurance:reparation:create')")
     @Operation(summary = "创建电梯报修请求申请")
-    public CommonResult<Long> createLeave(@Valid @RequestBody ReparationPartCreateReqVO createReqVO) {
+    public CommonResult<Long> createReparationPart(@Valid @RequestBody ReparationPartCreateReqVO createReqVO) {
         return success(service.createReparationPart(getLoginUserId(), createReqVO));
     }
 
@@ -54,4 +55,42 @@ public class ReparationPartController {
         return success( pageResult);
     }
 
+
+    @PutMapping("/update")
+    @PreAuthorize("@ss.hasPermission('insurance:reparation:create')")
+    @Operation(summary = "更新电梯报修请求申请")
+    public CommonResult<Long> updateReparationPart(@Validated @RequestBody ReparationPartUpdateReqVO updateReqVO) {
+        return success(service.updateReparationPart(getLoginUserId(), updateReqVO));
+    }
+    @PutMapping("/updatesubmit")
+    @PreAuthorize("@ss.hasPermission('insurance:reparation:create')")
+    @Operation(summary = "重新提交电梯报修请求申请")
+    public CommonResult<Long> submitUpdatedReparationPart(@Validated @RequestBody ReparationPartUpdateReqVO updateReqVO) {
+        return success(service.submitUpdatedReparationPart(getLoginUserId(), updateReqVO));
+    }
+
+    @PutMapping("/endusageupdate")
+    @PreAuthorize("@ss.hasPermission('insurance:reparation:create')")
+    @Operation(summary = "保存物业确认")
+    public CommonResult<Long> endusageupdate(@Validated @RequestBody ReparationPartUpdateReqVO updateReqVO) {
+        return success(service.endusageConfirmReparationPart(getLoginUserId(), updateReqVO));
+    }
+    @PutMapping("/endusageupdatesubmit")
+    @PreAuthorize("@ss.hasPermission('insurance:reparation:create')")
+    @Operation(summary = "提交物业确认")
+    public CommonResult<Long> endusageupdatesubmit(@Validated @RequestBody ReparationPartUpdateReqVO updateReqVO) {
+        return success(service.submitEndusageConfirmReparationPart(getLoginUserId(), updateReqVO));
+    }
+    @PutMapping("/postrepairupdate")
+    @PreAuthorize("@ss.hasPermission('insurance:reparation:create')")
+    @Operation(summary = "保存物业确认")
+    public CommonResult<Long> postrepairupdate(@Validated @RequestBody ReparationPartUpdateReqVO updateReqVO) {
+        return success(service.postrepairConfirmReparationPart(getLoginUserId(), updateReqVO));
+    }
+    @PutMapping("/postrepairupdatesubmit")
+    @PreAuthorize("@ss.hasPermission('insurance:reparation:create')")
+    @Operation(summary = "提交物业确认")
+    public CommonResult<Long> postrepairupdatesubmit(@Validated @RequestBody ReparationPartUpdateReqVO updateReqVO) {
+        return success(service.submitPostrepairReparationPart(getLoginUserId(), updateReqVO));
+    }
 }
