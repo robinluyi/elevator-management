@@ -87,7 +87,8 @@ public interface BpmProcessDefinitionService {
      * @param id 编号
      * @return 流程定义
      */
-    ProcessDefinition getProcessDefinition(String id);
+    ProcessDefinition
+    getProcessDefinition(String id);
 
     /**
      * 获得编号对应的 ProcessDefinition

@@ -6,10 +6,8 @@ import java.util.List;
 import javax.validation.Valid;
 
 import cn.iocoder.yudao.framework.common.pojo.PageResult;
-import cn.iocoder.yudao.module.insurance.controller.admin.reparationpart.vo.ReparationPartCreateReqVO;
-import cn.iocoder.yudao.module.insurance.controller.admin.reparationpart.vo.ReparationPartPageReqVO;
-import cn.iocoder.yudao.module.insurance.controller.admin.reparationpart.vo.ReparationPartRespVO;
-import cn.iocoder.yudao.module.insurance.controller.admin.reparationpart.vo.ReparationPartUpdateReqVO;
+import cn.iocoder.yudao.module.insurance.controller.admin.reparation.vo.ReparationRespVO;
+import cn.iocoder.yudao.module.insurance.controller.admin.reparationpart.vo.*;
 
 /**
  * 电梯报修申请 Service 接口
@@ -81,4 +79,9 @@ public interface ReparationPartService {
     Long postrepairConfirmReparationPart(Long loginUserId,ReparationPartUpdateReqVO updateReqVO);
     Long submitPostrepairReparationPart(Long loginUserId, ReparationPartUpdateReqVO updateReqVO);
 
+    PageResult<ReparationRespVO> getReparationPartPage4Insurance(Long loginUserId, InsurancePageReqVO pageVO);
+
+    PageResult<ReparationRespVO> getReparationPartPage4Endusage(Long loginUserId, EndUsagePageReqVO pageVO);
+
+    PageResult<ReparationRespVO> getReparationPartPage4Creator(Long loginUserId, CreatorPageReqVO pageVO);
 }

@@ -3,32 +3,35 @@ package cn.iocoder.yudao.module.insurance.service.reparationpart;
 import static cn.iocoder.yudao.framework.common.exception.util.ServiceExceptionUtil.exception;
 import static cn.iocoder.yudao.module.insurance.enums.ErrorCodeConstants.REPARATION_NOT_EXISTS;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 
-import cn.iocoder.yudao.module.bpm.controller.admin.task.vo.task.BpmTaskApproveReqVO;
-import cn.iocoder.yudao.module.bpm.controller.admin.task.vo.task.BpmTaskRespVO;
-import cn.iocoder.yudao.module.bpm.controller.admin.task.vo.task.BpmTaskTodoPageItemRespVO;
-import cn.iocoder.yudao.module.bpm.controller.admin.task.vo.task.BpmTaskTodoPageReqVO;
-import cn.iocoder.yudao.module.bpm.service.task.BpmTaskService;
-import cn.iocoder.yudao.module.insurance.controller.admin.part.vo.PartExportReqVO;
-import cn.iocoder.yudao.module.insurance.controller.admin.part.vo.PartUpdateReqVO;
-import cn.iocoder.yudao.module.system.api.dept.DeptApi;
-import cn.iocoder.yudao.module.system.api.user.AdminUserApi;
-import cn.iocoder.yudao.module.system.api.user.dto.AdminUserRespDTO;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
 import cn.iocoder.yudao.framework.common.pojo.PageResult;
 import cn.iocoder.yudao.module.bpm.api.task.BpmProcessInstanceApi;
 import cn.iocoder.yudao.module.bpm.api.task.dto.BpmProcessInstanceCreateReqDTO;
+import cn.iocoder.yudao.module.bpm.controller.admin.task.vo.task.BpmTaskApproveReqVO;
+import cn.iocoder.yudao.module.bpm.controller.admin.task.vo.task.BpmTaskRespVO;
+import cn.iocoder.yudao.module.bpm.service.task.BpmTaskService;
 import cn.iocoder.yudao.module.insurance.controller.admin.faultinfo.vo.FaultinfoPageReqVO;
 import cn.iocoder.yudao.module.insurance.controller.admin.faultinfo.vo.FaultinfoRespVO;
+import cn.iocoder.yudao.module.insurance.controller.admin.part.vo.PartExportReqVO;
 import cn.iocoder.yudao.module.insurance.controller.admin.part.vo.PartPageReqVO;
 import cn.iocoder.yudao.module.insurance.controller.admin.part.vo.PartRespVO;
+import cn.iocoder.yudao.module.insurance.controller.admin.part.vo.PartUpdateReqVO;
 import cn.iocoder.yudao.module.insurance.controller.admin.reparation.vo.ReparationRespVO;
+import cn.iocoder.yudao.module.insurance.controller.admin.reparationpart.vo.CreatorPageReqVO;
+import cn.iocoder.yudao.module.insurance.controller.admin.reparationpart.vo.EndUsagePageReqVO;
+import cn.iocoder.yudao.module.insurance.controller.admin.reparationpart.vo.InsurancePageReqVO;
 import cn.iocoder.yudao.module.insurance.controller.admin.reparationpart.vo.ReparationPartCreateReqVO;
 import cn.iocoder.yudao.module.insurance.controller.admin.reparationpart.vo.ReparationPartPageReqVO;
 import cn.iocoder.yudao.module.insurance.controller.admin.reparationpart.vo.ReparationPartRespVO;
@@ -45,6 +48,10 @@ import cn.iocoder.yudao.module.insurance.dal.mysql.reparation.ReparationMapper;
 import cn.iocoder.yudao.module.insurance.service.faultinfo.FaultinfoService;
 import cn.iocoder.yudao.module.insurance.service.part.PartService;
 import cn.iocoder.yudao.module.insurance.service.reparation.ReparationService;
+import cn.iocoder.yudao.module.system.api.dept.DeptApi;
+import cn.iocoder.yudao.module.system.api.dept.dto.DeptRespDTO;
+import cn.iocoder.yudao.module.system.api.user.AdminUserApi;
+import cn.iocoder.yudao.module.system.api.user.dto.AdminUserRespDTO;
 
 /**
  * 电梯报修申请 Service 实现类
@@ -158,6 +165,34 @@ public class ReparationPartServiceImpl implements ReparationPartService {
         return submitReparationPartOnStep(loginUserId, updateReqVO, taskName);
     }
 
+    @Override
+    public PageResult<ReparationRespVO> getReparationPartPage4Insurance(Long loginUserId, InsurancePageReqVO pageVO) {
+        PageResult<ReparationDO> reparationDOPageResult = reparationMapper.selectPage4Insurance(pageVO);
+        PageResult<ReparationRespVO> reparationRespVOPageResult = ReparationConvert.INSTANCE.convertPage(reparationDOPageResult);
+        return reparationRespVOPageResult;
+    }
+
+    @Override
+    public PageResult<ReparationRespVO> getReparationPartPage4Endusage(Long loginUserId, EndUsagePageReqVO pageVO) {
+        AdminUserRespDTO user = adminUserApi.getUser(loginUserId);
+        DeptRespDTO endusageDept = deptApi.getDept(user.getDeptId());
+        pageVO.setEndusageDeptId(endusageDept.getId());
+        PageResult<ReparationDO> reparationDOPageResult = reparationMapper.selectPage4Endusage(pageVO);
+        PageResult<ReparationRespVO> reparationRespVOPageResult = ReparationConvert.INSTANCE.convertPage(reparationDOPageResult);
+        reparationRespVOPageResult.getList().stream().forEach(respvo -> {
+            respvo.setTotalPrice(0L);
+        });
+        return reparationRespVOPageResult;
+    }
+
+    @Override
+    public PageResult<ReparationRespVO> getReparationPartPage4Creator(Long loginUserId, CreatorPageReqVO pageVO) {
+        pageVO.setUserId(loginUserId);
+
+        PageResult<ReparationDO> reparationDOPageResult = reparationMapper.selectPage4Creator(pageVO);
+        PageResult<ReparationRespVO> reparationRespVOPageResult = ReparationConvert.INSTANCE.convertPage(reparationDOPageResult);
+        return reparationRespVOPageResult;
+    }
 
 
     private Long updateReparationPartOnStep(Long loginUserId, ReparationPartUpdateReqVO updateReqVO , String taskName) {
@@ -235,8 +270,7 @@ public class ReparationPartServiceImpl implements ReparationPartService {
    // }
 
     private void validateReparationPartExists(Long id) {
-        ReparationDO reparationDO = reparationMapper.selectById(id);
-        if (reparationDO == null) {
+        if (reparationMapper.selectById(id) == null) {
             throw exception(REPARATION_NOT_EXISTS);
         }
     }

@@ -58,7 +58,9 @@ public interface ReparationConvert {
         reparationDO.processInstanceId( updateReqVO.getProcessInstanceId() );
         reparationDO.totalPrice( updateReqVO.getTotalPrice() );
         reparationDO.result( updateReqVO.getResult() );
-
+        reparationDO.userConfirmPic( updateReqVO.getUserConfirmPic() );
+        reparationDO.endusageConfirmPic( updateReqVO.getEndusageConfirmPic() );
         return reparationDO.build();
     }
+
 }

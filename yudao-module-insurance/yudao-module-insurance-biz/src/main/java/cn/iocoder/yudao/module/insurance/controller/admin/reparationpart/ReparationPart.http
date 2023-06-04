@@ -22,3 +22,33 @@ GET {{baseUrl}}/system/user/get?id=133
 Content-Type: application/json
 tenant-id: 1
 Authorization: Bearer {{token}}
+
+### 请求 /insurance/reparationpart/inspage 接口 => 成功
+GET {{baseUrl}}/insurance/reparationpart/inspage
+Content-Type: application/json
+tenant-id: 1
+Authorization: Bearer {{token}}
+
+### 请求 /insurance/reparationpart/endusagepage 接口 => 成功
+GET {{baseUrl}}/insurance/reparationpart/endusagepage
+Content-Type: application/json
+tenant-id: 1
+Authorization: Bearer {{token}}
+
+{
+//  "name": "yunai",
+}
+### 请求 /insurance/reparationpart/endusagepage 接口 on  => 成功
+GET {{baseUrl}}/insurance/reparationpart/endusagepage
+Content-Type: application/json
+tenant-id: 1
+Authorization: Bearer test129
+
+{
+}
+
+### 请求 /insurance/reparationpart/creatorpage 接口 => 成功
+GET {{baseUrl}}/insurance/reparationpart/creatorpage
+Content-Type: application/json
+tenant-id: 1
+Authorization: Bearer test126

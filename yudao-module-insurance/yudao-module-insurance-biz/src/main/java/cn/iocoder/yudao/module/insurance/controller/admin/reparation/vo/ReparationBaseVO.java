@@ -61,5 +61,12 @@ public class ReparationBaseVO {
 
     @Schema(description = "配件总价格")
     private Long totalPrice;
+    @Schema(description = "维修确认照片")
+    private String userConfirmPic;
+    @Schema(description = "物业确认照片")
+    private String endusageConfirmPic;
+
+    @Schema(description = "原因", requiredMode = Schema.RequiredMode.REQUIRED, example = "同意")
+    private String reason;
 
 }

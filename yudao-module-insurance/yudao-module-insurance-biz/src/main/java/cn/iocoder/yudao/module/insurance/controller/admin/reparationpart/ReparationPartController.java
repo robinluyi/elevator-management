@@ -3,10 +3,8 @@ package cn.iocoder.yudao.module.insurance.controller.admin.reparationpart;
 import cn.iocoder.yudao.framework.common.pojo.CommonResult;
 import cn.iocoder.yudao.framework.common.pojo.PageResult;
 
-import cn.iocoder.yudao.module.insurance.controller.admin.reparationpart.vo.ReparationPartCreateReqVO;
-import cn.iocoder.yudao.module.insurance.controller.admin.reparationpart.vo.ReparationPartPageReqVO;
-import cn.iocoder.yudao.module.insurance.controller.admin.reparationpart.vo.ReparationPartRespVO;
-import cn.iocoder.yudao.module.insurance.controller.admin.reparationpart.vo.ReparationPartUpdateReqVO;
+import cn.iocoder.yudao.module.insurance.controller.admin.reparation.vo.ReparationRespVO;
+import cn.iocoder.yudao.module.insurance.controller.admin.reparationpart.vo.*;
 import cn.iocoder.yudao.module.insurance.service.reparationpart.ReparationPartService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -92,5 +90,29 @@ public class ReparationPartController {
     @Operation(summary = "提交物业确认")
     public CommonResult<Long> postrepairupdatesubmit(@Validated @RequestBody ReparationPartUpdateReqVO updateReqVO) {
         return success(service.submitPostrepairReparationPart(getLoginUserId(), updateReqVO));
+    }
+
+    @GetMapping("/creatorpage")
+    @PreAuthorize("@ss.hasPermission('insurance:reparation:query')")
+    @Operation(summary = "获得电梯报修请求申请分页")
+    public CommonResult<PageResult< ReparationRespVO>> getReparationPartPage4Creator(@Valid CreatorPageReqVO pageVO) {
+        PageResult< ReparationRespVO> pageResult = service.getReparationPartPage4Creator(getLoginUserId(), pageVO);
+        return success( pageResult);
+    }
+
+    @GetMapping("/endusagepage")
+    //@PreAuthorize("@ss.hasPermission('insurance:reparation:query')")
+    @Operation(summary = "获得电梯报修请求申请分页")
+    public CommonResult<PageResult< ReparationRespVO>> getReparationPartPage4Endusage(@Valid EndUsagePageReqVO pageVO) {
+        PageResult< ReparationRespVO> pageResult = service.getReparationPartPage4Endusage(getLoginUserId(), pageVO);
+        return success( pageResult);
+    }
+
+    @GetMapping("/inspage")
+    @PreAuthorize("@ss.hasPermission('insurance:reparation:query')")
+    @Operation(summary = "获得电梯报修请求申请分页")
+    public CommonResult<PageResult< ReparationRespVO>> getReparationPartPage4Insurance(@Valid InsurancePageReqVO pageVO) {
+        PageResult<ReparationRespVO> pageResult = service.getReparationPartPage4Insurance(getLoginUserId(), pageVO);
+        return success( pageResult);
     }
 }

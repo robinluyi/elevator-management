@@ -1,5 +1,6 @@
 package cn.iocoder.yudao.module.insurance.dal.dataobject.reparation;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 import java.util.*;
 import java.time.LocalDateTime;
@@ -95,4 +96,9 @@ public class ReparationDO extends BaseDO {
      * "showEndUserPic,editEndUserPic,editForm" 等
      */
     private String marks;
+
+
+    private String userConfirmPic;
+
+    private String endusageConfirmPic;
 }
