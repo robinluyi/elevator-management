@@ -1,13 +1,11 @@
 package cn.iocoder.yudao.module.insurance.service.reparationpart.listener;
 
-import cn.iocoder.yudao.module.bpm.enums.task.TaskMonitorFieldConstants;
-import cn.iocoder.yudao.module.bpm.service.definition.BpmProcessDefinitionService;
-import cn.iocoder.yudao.module.bpm.service.task.BpmProcessInstanceService;
-import cn.iocoder.yudao.module.bpm.service.task.BpmTaskService;
-import cn.iocoder.yudao.module.insurance.dal.dataobject.reparation.ReparationDO;
-import cn.iocoder.yudao.module.insurance.dal.mysql.reparation.ReparationMapper;
-import cn.iocoder.yudao.module.insurance.service.reparationpart.ReparationPartService;
-import com.google.common.collect.ImmutableSet;
+import java.util.Map;
+import java.util.Set;
+
+import javax.annotation.Resource;
+import javax.validation.constraints.NotNull;
+
 import org.flowable.common.engine.api.delegate.event.FlowableEngineEntityEvent;
 import org.flowable.common.engine.api.delegate.event.FlowableEngineEventType;
 import org.flowable.common.engine.impl.event.FlowableEntityEventImpl;
@@ -20,10 +18,15 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-import javax.annotation.Resource;
-import javax.validation.constraints.NotNull;
-import java.util.Map;
-import java.util.Set;
+import com.google.common.collect.ImmutableSet;
+
+import cn.iocoder.yudao.module.bpm.enums.task.TaskMonitorFieldConstants;
+import cn.iocoder.yudao.module.bpm.service.definition.BpmProcessDefinitionService;
+import cn.iocoder.yudao.module.bpm.service.task.BpmProcessInstanceService;
+import cn.iocoder.yudao.module.bpm.service.task.BpmTaskService;
+import cn.iocoder.yudao.module.insurance.dal.dataobject.reparation.ReparationDO;
+import cn.iocoder.yudao.module.insurance.dal.mysql.reparation.ReparationMapper;
+import cn.iocoder.yudao.module.insurance.service.reparationpart.ReparationPartService;
 
 @Component
 public class ReparationPartTaskListener extends AbstractFlowableEngineEventListener {
@@ -93,9 +96,14 @@ public class ReparationPartTaskListener extends AbstractFlowableEngineEventListe
         String taskDefinitionKey = ((TaskEntityImpl) ((FlowableEntityEventImpl) event).getEntity()).getTaskDefinitionKey();
         Map variables = bpmTaskService.getExtAttribute(event.getProcessDefinitionId(),taskDefinitionKey);
         String marks = (String) variables.get(TaskMonitorFieldConstants.FIELD_MARKS_ON_CREATED);
+        String result = (String) variables.get(TaskMonitorFieldConstants.FIELD_RESULT_STATUS_ON_CREATE);
         marks = StringUtils.hasText(marks)? marks:"";
         ProcessInstance processInstance = processInstanceService.getProcessInstance( event.getProcessInstanceId());
-        reparationMapper.updateById(new ReparationDO().setId( Long.parseLong(processInstance.getBusinessKey())).setMarks(marks));
+        ReparationDO reparationDO = new ReparationDO().setId(Long.parseLong(processInstance.getBusinessKey())).setMarks(marks);
+        if(StringUtils.hasText(result)){
+            reparationDO.setResult(Integer.parseInt(result));
+        }
+        reparationMapper.updateById(reparationDO);
     }
 
 }
